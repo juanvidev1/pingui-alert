@@ -20,3 +20,7 @@ yarn-error.log
 cov_profile
 coverage/
 test_results/
+
+# AI
+AI_SUMMARY.md
+PLAN.md
