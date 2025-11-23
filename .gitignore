@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+*.iml
+
+# Deno / Node
+node_modules/
+npm-debug.log
+yarn-error.log
+.env
+.env.local
+cov_profile
+coverage/
+test_results/
