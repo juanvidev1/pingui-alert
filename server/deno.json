@@ -1,0 +1,11 @@
+{
+  "name": "@pingui/server",
+  "version": "0.1.0",
+  "nodeModulesDir": "auto",
+  "imports": {
+    "hono": "npm:hono@^4.10.6",
+    "sequelize": "npm:sequelize@^6.37.7",
+    "dotenv": "npm:dotenv@^17.2.3",
+    "sqlite3": "npm:sqlite3@^5.1.7"
+  }
+}
