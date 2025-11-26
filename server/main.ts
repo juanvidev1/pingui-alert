@@ -38,8 +38,10 @@ bot.command("start", async (ctx) => {
 // Start the bot
 bot.start();
 
-app.get("/alert", verifyToken, (c) => {
-  return c.json({ message: "Hello World" });
+app.get("/alert-quota", verifyToken, (c) => {
+  const chatId = parseInt(c.req.header("chatId") || "0");
+  const remainingAlerts = UserService.getUserAlertsRemaining(chatId);
+  return c.json({ alertsQuota: remainingAlerts });
 });
 
 app.post("/alert", verifyToken, async (c) => {

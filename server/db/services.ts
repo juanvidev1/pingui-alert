@@ -40,4 +40,12 @@ export class UserService {
     dbOpenObj.dbOpened = false;
     return true;
   }
+
+  static getUserAlertsRemaining(chatId: number) {
+    const db = dbHandler();
+    const row = db.prepare(`SELECT alerts_remaining FROM users WHERE chat_id = ?`).get(chatId);
+    db.close();
+    dbOpenObj.dbOpened = false;
+    return row?.alerts_remaining || 0;
+  }
 }
