@@ -24,3 +24,6 @@ test_results/
 # AI
 AI_SUMMARY.md
 PLAN.md
+
+# Requests
+*.http
