@@ -20,6 +20,7 @@ export const dbHandler = () => {
         username TEXT NOT NULL,
         chat_id INTEGER NOT NULL,
         secret TEXT NULLABLE,
+        alerts_remaining INTEGER DEFAULT 10,
         registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 `);

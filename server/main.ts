@@ -24,7 +24,7 @@ const generateSecret = (data: object) => {
 bot.command("start", async (ctx) => {
   const chatId = ctx.chat.id;
   const userName = ctx.from?.username || "";
-  const secret = generateSecret({ chatId, userName });
+  const secret = generateSecret({ chatId, userName, alertsRemaining: 10 });
   try {
     UserService.createUser(userName, chatId, secret);
     await ctx.reply("Hello! I'm Pingui Alert. You are now subscribed to alerts.") ;
@@ -48,19 +48,24 @@ app.post("/alert", verifyToken, async (c) => {
   
   try {
     const users = UserService.getAllUsers();
-    const results: { chatId: number | string; success: boolean; error?: string }[] = [];
+    const results: { chatId: number | string; message: string; success: boolean; error?: string; remainingAlerts?: number }[] = [];
     for (const user of users) {
       try {
+        const updatedUser = UserService.updateUserAlertsRemaining(user.chatId, user.alertsRemaining - 1);
+        if (updatedUser.alertsRemaining <= 0) {
+          bot.api.sendMessage(user.chatId, "You have no remaining alerts today. Tomorrow you will have 10 free alerts again.");
+          results.push({ chatId: user.chatId, message: "User alerts quota exceeded.", success: false, error: "No remaining alerts", remainingAlerts: updatedUser.alertsRemaining });
+          continue;
+        }
         bot.api.sendMessage(user.chatId, alertMessage);
-        results.push({ chatId: user.chatId, success: true });
+        results.push({ chatId: user.chatId, message: alertMessage, success: true, remainingAlerts: updatedUser.alertsRemaining });
       } catch (error) {
         console.error(`Failed to send to ${user.chatId}:`, error);
-        results.push({ chatId: user.chatId, success: false, error: String(error) });
+        results.push({ chatId: user.chatId, message: alertMessage, success: false, error: String(error), remainingAlerts: user.alertsRemaining });
       }
     }
     return c.json({ 
-      message: "Alert processing complete", 
-      alert: alertMessage,
+      message: "Alert processing complete",
       results 
     });
   } catch (error) {
@@ -70,6 +75,12 @@ app.post("/alert", verifyToken, async (c) => {
       error: String(error) 
     });
   }
+});
+
+app.post("/reset", verifyToken, (c) => {
+  const chatId = c.req.header("chatId") || "";
+  const result = UserService.resetAlertsQuota(chatId);
+  return c.json({ message: "Alerts quota reset", result });
 });
 
 Deno.serve(app.fetch);

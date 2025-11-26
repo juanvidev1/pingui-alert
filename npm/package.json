@@ -1,0 +1,25 @@
+{
+  "name": "pingui-alert",
+  "version": "0.1.0",
+  "description": "Pingui Alert is a simple alert system for your applications.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanvicentereyes/pingui-alert.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juanvicentereyes/pingui-alert/issues"
+  },
+  "main": "./script/mod.js",
+  "module": "./esm/mod.js",
+  "exports": {
+    ".": {
+      "import": "./esm/mod.js",
+      "require": "./script/mod.js"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0"
+  },
+  "_generatedBy": "dnt@dev"
+}

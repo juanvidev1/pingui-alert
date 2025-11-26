@@ -12,6 +12,11 @@ export const verifyToken = async (c: Context, next: Next) => {
     try {
         const secret = Deno.env.get("JWT_SECRET") || "";
         const decoded = jwt.verify(token, secret);
+        const remainingAlerts = decoded.alertsRemaining;
+        if (remainingAlerts <= 0) {
+            return c.json({ message: "No remaining alerts" }, 401);
+        }
+        
         c.set("user", decoded);
         await next();
     } catch (_err) {

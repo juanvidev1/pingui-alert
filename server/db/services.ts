@@ -17,10 +17,27 @@ export class UserService {
       chatId: row.chat_id,
       username: row.username,
       secret: row.secret,
+      alertsRemaining: row.alerts_remaining,
       registeredAt: row.registered_at
-    })) as unknown as { chatId: number; username: string; secret: string; registeredAt: Date }[];
+    })) as unknown as { chatId: number; username: string; secret: string; alertsRemaining: number; registeredAt: Date }[];
     db.close();
     dbOpenObj.dbOpened = false; 
     return users;
+  }
+
+  static updateUserAlertsRemaining(chatId: number, alertsRemaining: number) {
+    const db = dbHandler();
+    db.prepare(`UPDATE users SET alerts_remaining = ? WHERE chat_id = ?`).run(alertsRemaining, chatId);
+    db.close();
+    dbOpenObj.dbOpened = false;
+    return {chatId, alertsRemaining, success: true};
+  }
+
+  static resetAlertsQuota(chatId: number | string) {
+    const db = dbHandler();
+    db.prepare(`UPDATE users SET alerts_remaining = 10 WHERE chat_id = ?`).run(chatId);
+    db.close();
+    dbOpenObj.dbOpened = false;
+    return true;
   }
 }

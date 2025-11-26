@@ -3,12 +3,13 @@ import { build, emptyDir } from "dnt";
 await emptyDir("./npm");
 
 await build({
-  entryPoints: ["../client/mod.ts"],
+  entryPoints: ["./client/mod.ts"],
   outDir: "./npm",
   shims: {
     // see JS docs for overview and more options
     deno: true,
   },
+  test: false,
   package: {
     // package.json properties
     name: "pingui-alert",
@@ -25,7 +26,7 @@ await build({
   },
   postBuild() {
     // steps to run after building and before running the tests
-    Deno.copyFileSync("../README.md", "npm/README.md");
-    Deno.copyFileSync("../LICENSE.md", "npm/LICENSE.md");
+    Deno.copyFileSync("./README.md", "npm/README.md");
+    Deno.copyFileSync("./LICENSE.md", "npm/LICENSE.md");
   },
 });
