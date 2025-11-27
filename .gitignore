@@ -10,6 +10,7 @@ Thumbs.db
 !.vscode/settings.json
 .idea
 *.iml
+.vscode
 
 # Deno / Node
 node_modules/
