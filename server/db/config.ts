@@ -1,10 +1,15 @@
-import { DatabaseSync } from "node:sqlite";
-import {Sequelize} from "sequelize";
+import { DatabaseSync } from 'node:sqlite';
+import { Sequelize } from 'sequelize';
+import { config } from 'dotenv';
+
+config();
+
+const maxAlerts = Deno.env.get('MAX_ALERTS') || 10;
 
 export const dbOpenObj = {
   dbOpened: false
 };
-const db = new DatabaseSync("test.db");
+const db = new DatabaseSync('test.db');
 dbOpenObj.dbOpened = true;
 // console.log("Fuera de la función", db);
 
@@ -20,23 +25,23 @@ export const dbHandler = () => {
         username TEXT NOT NULL,
         chat_id INTEGER NOT NULL,
         secret TEXT NULLABLE,
-        alerts_remaining INTEGER DEFAULT 10,
+        alerts_remaining INTEGER DEFAULT ${maxAlerts},
         registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 `);
   return db;
-}
+};
 
 export const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "test.db",
+  dialect: 'sqlite',
+  storage: 'test.db'
 });
 
 export const initDb = async () => {
   try {
     await sequelize.authenticate();
-    console.log("Database connection has been established successfully.");
+    console.log('Database connection has been established successfully.');
   } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    console.error('Unable to connect to the database:', error);
   }
-}
+};

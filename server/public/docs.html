@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation - Pingui Alert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">
+        <a href="/" style="text-decoration: none; color: inherit">Pingui Alert</a> <span class="badge">Beta</span>
+      </div>
+      <div class="nav-links">
+        <a href="/docs" class="nav-link active">Documentation</a>
+        <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="nav-link">GitHub</a>
+      </div>
+    </nav>
+
+    <div class="docs-container">
+      <aside class="sidebar">
+        <div class="sidebar-group">
+          <h3>Getting Started</h3>
+          <a href="#introduction" class="sidebar-link">Introduction</a>
+          <a href="#setup" class="sidebar-link">Setup & Auth</a>
+        </div>
+        <div class="sidebar-group">
+          <h3>API Reference</h3>
+          <a href="#send-alert" class="sidebar-link">Send Alert</a>
+          <a href="#check-quota" class="sidebar-link">Check Quota</a>
+        </div>
+        <div class="sidebar-group">
+          <h3>SDKs</h3>
+          <a href="#npm-package" class="sidebar-link">Node.js / TypeScript</a>
+        </div>
+      </aside>
+
+      <main class="docs-content">
+        <section id="introduction">
+          <h1>Introduction</h1>
+          <p>
+            Pingui Alert is a lightweight notification service that allows you to send alerts to your Telegram account
+            directly from your code. It's designed to be dead simple to use, with zero configuration required on your
+            server.
+          </p>
+        </section>
+
+        <section id="setup">
+          <h2>Setup & Authentication</h2>
+          <p>To start sending alerts, you need to obtain an API Key from our Telegram bot.</p>
+          <ol class="steps-list">
+            <li>Open Telegram and search for <strong>@PinguiAlertBot</strong> (or your hosted bot instance).</li>
+            <li>Start a chat and send the command <code>/start</code>.</li>
+            <li>The bot will reply with your unique <strong>API Key</strong>. Keep this secret!</li>
+          </ol>
+          <div class="info-box">
+            <strong>Note:</strong> The service is completely free. The 10 alerts per day limit helps prevent service
+            degradation due to Telegram API rate limits and server capacity constraints on @PinguiAlertBot. If your
+            instance is self-hosted, you can increase the limit by setting the <code>MAX_ALERTS</code> environment
+            variable.
+          </div>
+        </section>
+
+        <section id="send-alert">
+          <h2>Send an Alert</h2>
+          <p>Send a POST request to the <code>/alert</code> endpoint to deliver a message.</p>
+
+          <div class="endpoint-badge">POST /alert</div>
+
+          <h3>Headers</h3>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Value</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Authorization</code></td>
+                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                <td>Your JWT token received from the bot.</td>
+              </tr>
+              <tr>
+                <td><code>Content-Type</code></td>
+                <td><code>application/json</code></td>
+                <td>Required.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Body</h3>
+          <pre><code>{
+  "alert": "Your message here"
+}</code></pre>
+
+          <h3>Example (cURL)</h3>
+          <pre><code>curl -X POST https://api.pingui.com/alert \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"alert": "Hello from my server!"}'</code></pre>
+        </section>
+
+        <section id="npm-package">
+          <h2>NPM Package</h2>
+          <p>If you are using Node.js or TypeScript, we recommend using our official package.</p>
+
+          <h3>Installation</h3>
+          <pre><code>npm install pingui-alert</code></pre>
+
+          <h3>Usage</h3>
+          <pre><code>import { Pingui } from 'pingui-alert';
+
+const client = new Pingui('YOUR_API_KEY');
+
+await client.send('Database backup completed successfully! ✅');</code></pre>
+        </section>
+      </main>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Pingui Alert. Built with ❤️ by <a href="https://github.com/juanvidev1">Juan Vicente</a>.</p>
+    </footer>
+  </body>
+</html>
