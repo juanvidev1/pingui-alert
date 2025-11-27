@@ -39,6 +39,10 @@
           <h3>SDKs</h3>
           <a href="#npm-package" class="sidebar-link">Node.js / TypeScript</a>
         </div>
+        <div class="sidebar-group">
+          <h3>Best Practices</h3>
+          <a href="#production-usage" class="sidebar-link">Production Usage</a>
+        </div>
       </aside>
 
       <main class="docs-content">
@@ -121,6 +125,51 @@
 const client = new Pingui('YOUR_API_KEY');
 
 await client.send('Database backup completed successfully! ✅');</code></pre>
+        </section>
+
+        <section id="production-usage">
+          <h2>Production Usage</h2>
+          <p>
+            When using Pingui Alert in production environments, follow these best practices to ensure optimal service
+            quality for everyone.
+          </p>
+
+          <div class="info-box" style="background: rgba(251, 146, 60, 0.1); border-left-color: #fb923c">
+            <strong>⚠️ Important:</strong> If you're using the hosted <strong>@PinguiAlertBot</strong> instance in
+            production, please reserve it <strong>exclusively for critical alerts</strong> (e.g., system failures,
+            security incidents, critical errors). This helps maintain service availability for all users.
+          </div>
+
+          <h3>Recommended Production Setup</h3>
+          <p>For production workloads with frequent notifications, we recommend one of these approaches:</p>
+
+          <ul class="steps-list">
+            <li>
+              <strong>Self-Host Your Instance:</strong> Deploy your own Pingui Alert server and bot. This gives you full
+              control over rate limits and ensures dedicated resources.
+            </li>
+            <li>
+              <strong>Use for Critical Alerts Only:</strong> If using @PinguiAlertBot, implement filtering logic to send
+              only high-priority notifications (failures, errors, security events).
+            </li>
+            <li>
+              <strong>Implement Batching:</strong> Group multiple non-critical alerts into periodic summary messages
+              instead of sending individual notifications.
+            </li>
+          </ul>
+
+          <h3>Self-Hosting</h3>
+          <p>To self-host Pingui Alert:</p>
+          <pre><code>git clone https://github.com/juanvidev1/pingui-alert
+cd pingui-alert
+
+# Set your environment variables
+export BOT_TOKEN="your_telegram_bot_token"
+export JWT_SECRET="your_secret_key"
+export MAX_ALERTS=100  # Customize your daily limit
+
+# Run the server
+deno task dev</code></pre>
         </section>
       </main>
     </div>
