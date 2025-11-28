@@ -28,3 +28,8 @@ PLAN.md
 
 # Requests
 *.http
+
+#DB
+test.db
+*.db
+*.sqlite

@@ -34,12 +34,14 @@ export const dbHandler = () => {
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: 'test.db'
+  storage: 'test.db',
+  logging: false
 });
 
 export const initDb = async () => {
   try {
     await sequelize.authenticate();
+    await sequelize.sync();
     console.log('Database connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

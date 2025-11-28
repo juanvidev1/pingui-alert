@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+  </head>
+  <body>
+    <div class="background-glow"></div>
+    <nav class="navbar">
+      <div class="logo">Pingui Alert <span class="badge">Beta</span></div>
+      <div class="nav-links">
+        <a href="/docs" class="nav-link">Documentation</a>
+        <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="nav-link">GitHub</a>
+      </div>
+    </nav>
+    <main>
+      <form class="login-form" method="post">
+        <label for="chatId">Chat ID:</label>
+        <input type="number" id="chatId" name="chatId" required />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <button type="submit">Login</button>
+      </form>
+    </main>
+    <footer>
+      <p>&copy; 2025 Pingui Alert. Built with ❤️ by <a href="https://github.com/juanvidev1">Juan Vicente</a>.</p>
+    </footer>
+    <script>
+      const form = document.querySelector('form');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const chatId = document.querySelector('#chatId').value;
+        const password = document.querySelector('#password').value;
+
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ chatId, password })
+        });
+
+        if (!res.ok) {
+          alert('An error occurred. Please try again later.');
+          return;
+        }
+
+        const data = await res.json();
+        console.log(data);
+        if (data.success) {
+          window.location.href = `/user-data/${chatId}`;
+        } else {
+          alert(data.message);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -140,11 +140,46 @@ h1 {
   -webkit-text-fill-color: transparent;
 }
 
+.title {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.03em;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .subtitle {
   font-size: 1.25rem;
   color: var(--text-secondary);
   margin-bottom: 2.5rem;
   max-width: 600px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-form label {
+  font-weight: 600;
+}
+
+.login-form input {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.login-form button {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
 .cta-group {
