@@ -115,4 +115,24 @@ export class UserService {
     dbOpenObj.dbOpened = false;
     return row?.alerts_remaining || 0;
   }
+
+  static async updateUserData(chatId: number, username: string, secret: string) {
+    const user = await User.findOne({ where: { chatId, secret } });
+    if (!user) {
+      return { chatId, success: false };
+    }
+    user.username = username;
+    await user.save();
+    return { chatId, success: true };
+  }
+
+  static async updatePassword(chatId: number, password: string, secret: string) {
+    const user = await User.findOne({ where: { chatId, secret } });
+    if (!user) {
+      return { chatId, success: false };
+    }
+    user.password = password;
+    await user.save();
+    return { chatId, success: true };
+  }
 }

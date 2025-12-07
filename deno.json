@@ -1,11 +1,8 @@
 {
-    "name": "@pingui/root",
-    "version": "0.1.0",
-    "workspace": [
-        "server",
-        "client"
-    ],
-    "tasks": {
+  "name": "@pingui/root",
+  "version": "0.1.0",
+  "workspace": ["server", "client"],
+  "tasks": {
     "dev": "deno run --watch --allow-net --allow-env --allow-read --allow-write --allow-sys --allow-ffi server/main.ts"
   },
   "nodeModulesDir": "auto",

@@ -15,6 +15,11 @@ loginPageRouter.get('/css/login.css', (c) => {
   return WebController.serveLoginStyles(c);
 });
 
+export const exampleRouter = new Hono().basePath('/example');
+exampleRouter.get('/', (c) => {
+  return WebController.example(c);
+});
+
 export const honoRouter = new Hono();
 honoRouter.get('/', (c) => {
   return WebController.index(c);
@@ -31,9 +36,9 @@ docsRouter.get('/', (c) => {
 
 export const userDataRouter = honoRouter.basePath('/user-data');
 userDataRouter.get('/:chatId', (c) => {
-  return WebController.userData(c);
+  return WebController.userDataV2(c);
 });
 
-userDataRouter.get('/css/userDataStyles.css', (c) => {
-  return WebController.serveUserDataStyles(c);
+userDataRouter.get('/css/styles.css', (c) => {
+  return WebController.serveStyles(c);
 });
