@@ -4,6 +4,7 @@ import { Docs } from './pages/docs.tsx';
 import { Login } from './pages/login.tsx';
 import { Register } from './pages/register.tsx';
 import { UserData } from './pages/userData.tsx';
+import { Settings } from './pages/settings.tsx';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/user-data/:chatId" element={<UserData />} />
+          <Route path="/settings/:chatId" element={<Settings />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>

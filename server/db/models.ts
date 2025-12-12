@@ -9,6 +9,7 @@ export interface UserAttributes {
   chatId: number;
   secret: string;
   password?: string;
+  email?: string;
   alertsRemaining: number;
   registeredAt: Date;
 }
@@ -21,6 +22,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   declare chatId: number;
   declare secret: string;
   declare password?: string;
+  declare email?: string;
   declare alertsRemaining: number;
   declare registeredAt: Date;
 }
@@ -47,6 +49,11 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true
     },
     alertsRemaining: {
       type: DataTypes.INTEGER,

@@ -10,7 +10,10 @@ export const useUserData = async (chatId: number | string, secret: string) => {
       }
     });
     const { user } = await response.json();
-    return { chatId, user };
+    if (!response.ok) {
+      return { success: false, message: user.message };
+    }
+    return { chatId, user, success: true };
   } catch (error) {
     return { error };
   }

@@ -1,6 +1,7 @@
 import { Context } from 'hono';
 import { UserService } from '../db/services.ts';
 import { bot } from '../main.ts';
+import bcrypt from 'bcrypt';
 
 export class ApiController {
   public static async alert(c: Context) {
@@ -86,11 +87,34 @@ export class ApiController {
 
     const body = await c.req.json();
 
-    if (!body.username || !body.secret) {
-      return c.json({ message: 'Invalid username or secret', success: false });
+    const updatedUser = await UserService.updateUserData(Number(chatId), body.username, body.email);
+    return c.json({ message: 'User updated', updatedUser });
+  }
+
+  public static async updatePassword(c: Context) {
+    const chatId = c.req.header('chatId') || '';
+
+    const { oldPassword, password, passwordConfirmation, secret } = await c.req.json();
+
+    if (!oldPassword || !password || !passwordConfirmation || !secret) {
+      return c.json({ message: 'Invalid password or password confirmation', success: false }, 400);
     }
 
-    const updatedUser = await UserService.updateUserData(Number(chatId), body.username, body.secret);
-    return c.json({ message: 'User updated', updatedUser });
+    const user = await UserService.getUserByChatId(Number(chatId));
+    if (!user) {
+      return c.json({ message: 'User not found', success: false }, 404);
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.user?.password || '');
+    if (!isPasswordValid) {
+      return c.json({ message: 'Old password is incorrect', success: false }, 400);
+    }
+
+    if (password !== passwordConfirmation) {
+      return c.json({ message: 'Passwords do not match', success: false }, 400);
+    }
+
+    const updatedUser = await UserService.updatePassword(Number(chatId), password, secret);
+    return c.json({ message: 'Password updated', updatedUser }, 200);
   }
 }

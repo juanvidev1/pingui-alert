@@ -1,6 +1,7 @@
 // import { User } from "./models.ts";
 import { dbHandler, dbOpenObj } from './config.ts';
 import { User } from './models.ts';
+import bcrypt from 'bcrypt';
 
 export class UserService {
   static createUser(username: string, chatId: number, secret: string) {
@@ -116,12 +117,13 @@ export class UserService {
     return row?.alerts_remaining || 0;
   }
 
-  static async updateUserData(chatId: number, username: string, secret: string) {
-    const user = await User.findOne({ where: { chatId, secret } });
+  static async updateUserData(chatId: number, username: string, email: string) {
+    const user = await User.findOne({ where: { chatId } });
     if (!user) {
       return { chatId, success: false };
     }
     user.username = username;
+    user.email = email;
     await user.save();
     return { chatId, success: true };
   }
@@ -131,7 +133,7 @@ export class UserService {
     if (!user) {
       return { chatId, success: false };
     }
-    user.password = password;
+    user.password = bcrypt.hashSync(password, 10);
     await user.save();
     return { chatId, success: true };
   }

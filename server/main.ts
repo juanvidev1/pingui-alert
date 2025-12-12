@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: 'http://localhost:5173',
     allowHeaders: ['Content-Type', 'Authorization', 'chatId'],
-    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    allowMethods: ['POST', 'GET', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     exposeHeaders: ['Content-Length'],
     maxAge: 600,
     credentials: true
@@ -85,5 +85,9 @@ app.post('/reset', verifyToken, async (c) => {
   const result = await UserService.resetAlertsQuotaV2(chatId);
   return c.json({ message: 'Alerts quota reset', result });
 });
+
+app.patch('/update', verifyToken, ApiController.settings);
+
+app.patch('/update-password', verifyToken, ApiController.updatePassword);
 
 Deno.serve(app.fetch);
