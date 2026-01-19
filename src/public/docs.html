@@ -1435,8 +1435,9 @@
           <p>To start sending alerts, you need to obtain an API Key from our Telegram bot.</p>
           <ol class="steps-list">
             <li>Open Telegram and search for <strong>@PinguiAlertBot</strong> (or your hosted bot instance).</li>
-            <li>Start a chat and send the command <code>/start</code>.</li>
-            <li>The bot will reply with your unique <strong>API Key</strong>. Keep this secret!</li>
+            <li>Start a chat and send the command <code>/start</code> to register.</li>
+            <li>Send the command <code>/temporal_token</code> to get a temporary access token.</li>
+            <li>Use the API to create your first integration and start sending alerts.</li>
           </ol>
           <div class="info-box">
             <strong>Note:</strong> The service is completely free. The 10 alerts per day limit helps prevent service
@@ -1543,8 +1544,11 @@ export BOT_TOKEN="your_telegram_bot_token"
 export JWT_SECRET="your_secret_key"
 export MAX_ALERTS=100  # Customize your daily limit
 
+# Install dependencies
+pnpm install
+
 # Run the server
-deno task dev</code></pre>
+pnpm run dev</code></pre>
         </section>
       </main>
     </div>
