@@ -37,4 +37,8 @@ bot.command('temporal_token', async (ctx) => {
   await ctx.reply(`This is your temporal token, it will expire in 5 minutes: ${tempTokenData}`);
 });
 
+bot.command('get_me', async (ctx) => {
+  await ctx.reply(`Your user id is: ${ctx.chat.id}`);
+});
+
 export default bot;

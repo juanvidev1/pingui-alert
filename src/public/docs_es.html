@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Documentation - Pingui Alert</title>
+    <title>Documentación - Pingui Alert</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -1393,10 +1393,10 @@
         <a href="/" style="text-decoration: none; color: inherit">Pingui Alert</a> <span class="badge">Beta</span>
       </div>
       <div class="nav-links">
-        <a href="/docs" class="nav-link active">Documentation</a>
+        <a href="/es" class="nav-link active">Documentación</a>
         <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="nav-link">GitHub</a>
-        <a href="/es" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
-          <span style="font-size: 1.1em">🇪🇸</span> ES
+        <a href="/" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
+          <span style="font-size: 1.1em">🇺🇸</span> EN
         </a>
       </div>
     </nav>
@@ -1404,67 +1404,103 @@
     <div class="docs-container">
       <aside class="sidebar">
         <div class="sidebar-group">
-          <h3>Getting Started</h3>
-          <a href="#introduction" class="sidebar-link">Introduction</a>
-          <a href="#setup" class="sidebar-link">Setup & Auth</a>
+          <h3>Primeros Pasos</h3>
+          <a href="#introduction" class="sidebar-link">Introducción</a>
+          <a href="#setup" class="sidebar-link">Configuración y Auth</a>
         </div>
         <div class="sidebar-group">
-          <h3>API Reference</h3>
-          <a href="#send-alert" class="sidebar-link">Send Alert</a>
-          <a href="#create-integration" class="sidebar-link">Create Integration</a>
-          <a href="#get-integration" class="sidebar-link">Get Integration</a>
-          <a href="#update-rate-limit" class="sidebar-link">Update Rate Limit</a>
-          <a href="#revoke-integration" class="sidebar-link">Revoke Integration</a>
-          <a href="#check-quota" class="sidebar-link">Check Quota</a>
+          <h3>Referencia API</h3>
+          <a href="#send-alert" class="sidebar-link">Enviar Alerta</a>
+          <a href="#create-integration" class="sidebar-link">Crear Integración</a>
+          <a href="#get-integration" class="sidebar-link">Obtener Integración</a>
+          <a href="#update-rate-limit" class="sidebar-link">Actualizar Rate Limit</a>
+          <a href="#revoke-integration" class="sidebar-link">Revocar Integración</a>
+          <a href="#check-quota" class="sidebar-link">Verificar Cuota</a>
         </div>
         <div class="sidebar-group">
           <h3>SDKs</h3>
           <a href="#npm-package" class="sidebar-link">Node.js / TypeScript</a>
         </div>
         <div class="sidebar-group">
-          <h3>Best Practices</h3>
-          <a href="#commandments" class="sidebar-link">The Commandments</a>
-          <a href="#production-usage" class="sidebar-link">Production Usage</a>
+          <h3>Buenas Prácticas</h3>
+          <a href="#commandments" class="sidebar-link">Los Mandamientos</a>
+          <a href="#production-usage" class="sidebar-link">Uso en Producción</a>
         </div>
         <div class="sidebar-group">
-          <h3>Use cases</h3>
-          <a href="#use-cases" class="sidebar-link">Use cases</a>
+          <h3>Casos de Uso</h3>
+          <a href="#use-cases" class="sidebar-link">Casos de Uso</a>
         </div>
       </aside>
 
       <main class="docs-content">
         <section id="introduction">
-          <h1>Introduction</h1>
+          <h1>Introducción</h1>
           <p>
-            Pingui Alert is a lightweight notification service that allows you to send alerts to your Telegram account
-            directly from your code. It's designed to be dead simple to use, with zero configuration required on your
-            server.
+            Pingui Alert es un servicio de notificación ligero que te permite enviar alertas a tu cuenta de Telegram
+            directamente desde tu código. Está diseñado para ser extremadamente simple de usar, sin requerir configuración
+            en tu servidor.
           </p>
         </section>
 
         <section id="setup">
-          <h2>Setup & Authentication</h2>
-          <p>To start sending alerts, you need to obtain an API Key from our Telegram bot.</p>
+          <h2>Configuración y Autenticación</h2>
+          <p>Para comenzar a enviar alertas, necesitas obtener una API Key de nuestro bot de Telegram.</p>
           <ol class="steps-list">
-            <li>Open Telegram and search for <strong>@PinguiAlertBot</strong> (or your hosted bot instance).</li>
-            <li>Start a chat and send the command <code>/start</code> to register.</li>
+            <li>Abre Telegram y busca <strong>@PinguiAlertBot</strong> (o tu instancia hosteada).</li>
+            <li>Inicia un chat y envía el comando <code>/start</code> para registrarte.</li>
             <li>
-              Send the command <code>/temporal_token</code> to get a temporary access token. (Once you create your first
-              integration, you will get a new permanent token)
+              Envía el comando <code>/temporal_token</code> para obtener un token de acceso temporal. (Una vez que crees
+              tu primera integración, obtendrás un nuevo token permanente)
             </li>
-            <li>Use the API to create your first integration and start sending alerts.</li>
+            <li>Usa la API para crear tu primera integración y comenzar a enviar alertas.</li>
           </ol>
           <div class="info-box">
-            <strong>Note:</strong> The service is completely free. The 10 alerts per day limit helps prevent service
-            degradation due to Telegram API rate limits and server capacity constraints on @PinguiAlertBot. If your
-            instance is self-hosted, you can increase the limit by setting the <code>MAX_ALERTS</code> environment
-            variable.
+            <strong>Nota:</strong> El servicio es completamente gratuito. El límite de 10 alertas por día ayuda a prevenir
+            la degradación del servicio debido a los límites de la API de Telegram y las restricciones de capacidad del servidor en @PinguiAlertBot. Si tu
+            instancia es self-hosted, puedes aumentar el límite configurando la variable de entorno <code>MAX_ALERTS</code>.
           </div>
         </section>
 
         <section id="send-alert">
-          <h2>Send an Alert</h2>
-          <p>Send a POST request to the <code>/alert</code> endpoint to deliver a message.</p>
+          <h2>Enviar una Alerta</h2>
+          <p>Envía una petición POST al endpoint <code>/alert</code> para entregar un mensaje.</p>
+
+          <div class="endpoint-badge">POST /alert</div>
+
+          <h3>Headers</h3>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Valor</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Authorization</code></td>
+                <td><code>Bearer &lt;TU_API_KEY&gt;</code></td>
+                <td>Tu token JWT recibido del bot.</td>
+              </tr>
+              <tr>
+                <td><code>Content-Type</code></td>
+                <td><code>application/json</code></td>
+                <td>Requerido.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Body</h3>
+          <pre><code>{
+  "alert": "Tu mensaje aquí"
+}</code></pre>
+
+          <h3>Ejemplo (cURL)</h3>
+          <pre><code>curl -X POST https://api.pingui.com/alert \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"alert": "¡Hola desde mi servidor!"}'</code></pre>
+        </section>
 
           <div class="endpoint-badge">POST /alert</div>
 
@@ -1504,11 +1540,36 @@
         </section>
 
         <section id="create-integration">
-          <h2>Create Integration</h2>
+          <h2>Crear Integración</h2>
           <p>
-            Create a new integration for a specific chat using the temporal token. The scope is a string open to the
-            user criteria
+            Crea una nueva integración para un chat específico usando el token temporal. El scope es una cadena abierta
+            al criterio del usuario.
           </p>
+
+          <div class="endpoint-badge">POST /createIntegration</div>
+
+          <h3>Headers</h3>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Valor</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Authorization</code></td>
+                <td><code>Bearer &lt;TOKEN_TEMPORAL&gt;</code></td>
+                <td>El token temporal recibido del comando /temporal_token.</td>
+              </tr>
+              <tr>
+                <td><code>Content-Type</code></td>
+                <td><code>application/json</code></td>
+                <td>Requerido.</td>
+              </tr>
+            </tbody>
+          </table>
 
           <div class="endpoint-badge">POST /createIntegration</div>
 
@@ -1549,8 +1610,8 @@
         </section>
 
         <section id="get-integration">
-          <h2>Get Integration</h2>
-          <p>Retrieve details about a specific integration.</p>
+          <h2>Obtener Integración</h2>
+          <p>Recupera detalles sobre una integración específica.</p>
 
           <div
             class="endpoint-badge"
@@ -1583,8 +1644,8 @@
         </section>
 
         <section id="update-rate-limit">
-          <h2>Update Rate Limit</h2>
-          <p>Update the rate limit for a specific integration.</p>
+          <h2>Actualizar Límite de Tasa</h2>
+          <p>Actualiza el límite de tasa para una integración específica.</p>
 
           <div class="endpoint-badge">POST /updateRateLimit</div>
 
@@ -1625,8 +1686,8 @@
         </section>
 
         <section id="revoke-integration">
-          <h2>Revoke Integration</h2>
-          <p>Revoke (deactivate) an integration.</p>
+          <h2>Revocar Integración</h2>
+          <p>Revoca (desactiva) una integración.</p>
 
           <div class="endpoint-badge">POST /revokeIntegration</div>
 
@@ -1666,131 +1727,123 @@
         </section>
 
         <section id="npm-package">
-          <h2>NPM Package</h2>
+          <h2>Paquete NPM</h2>
           <p>
-            If you are using Node.js or TypeScript, we recommend using our official package in case you just want to
-            send alerts using Pingui Alert server. Rate limit and quota are handled by the server and you need to still
-            use the endpoint createIntegration to get your API KEY.
+            Si usas Node.js o TypeScript, te recomendamos usar nuestro paquete oficial en caso de que solo quieras
+            enviar alertas usando el servidor Pingui Alert. El límite de tasa y la cuota son manejados por el servidor
+            y aún necesitas usar el endpoint createIntegration para obtener tu API KEY.
           </p>
 
-          <h3>Installation</h3>
+          <h3>Instalación</h3>
           <pre><code>npm install pingui-alert</code></pre>
 
-          <h3>Usage</h3>
+          <h3>Uso</h3>
           <pre><code>import { Pingui } from 'pingui-alert';
 
-const client = new Pingui('YOUR_API_KEY');
+const client = new Pingui('TU_API_KEY');
 
-await client.send('Database backup completed successfully! ✅');</code></pre>
+await client.send('¡Backup de base de datos completado con éxito! ✅');</code></pre>
         </section>
 
         <section id="commandments">
-          <h2>The Commandments</h2>
+          <h2>Los Mandamientos</h2>
           <p>
-            To keep Pingui Alert useful and stable for everyone, we adhere to a strict set of rules. Follow these
-            commandments to ensure the best experience.
+            Para mantener Pingui Alert útil y estable para todos, nos adherimos a un conjunto estricto de reglas. Sigue estos
+            mandamientos para asegurar la mejor experiencia.
           </p>
 
-          <div class="info-box" style="border-left-color: var(--accent-secondary); background: rgba(139, 92, 246, 0.1)">
-            <strong>📜 The Golden Rule:</strong> Pingui Alert is for <em>actionable, critical</em> incidents. It is not
-            a logging service.
+          <div class="info-box" style="border-left-color: var(--accent-secondary); background: rgba(139, 92, 246, 0.1);">
+            <strong>📜 La Regla de Oro:</strong> Pingui Alert es para incidentes <em>accionables y críticos</em>. No es un servicio de logging.
           </div>
 
-          <ol class="steps-list" style="counter-reset: commandments">
-            <li style="list-style: none; counter-increment: commandments">
-              <strong style="font-size: 1.1em; color: var(--accent-primary)">I. Critical Use Only</strong><br />
-              You shall use it only for critical alerts that must be corrected immediately. Design your system to
-              trigger these alerts sparingly—only once per incident type (avoid alert storms).
+          <ol class="steps-list" style="counter-reset: commandments;">
+            <li style="list-style: none; counter-increment: commandments;">
+              <strong style="font-size: 1.1em; color: var(--accent-primary);">I. Uso Crítico Solamente</strong><br/>
+              Solo lo usarás para alertas críticas que deban ser corregidas de inmediato. Diseña tu sistema para disparar estas alertas con moderación—solo una vez por tipo de incidente.
             </li>
-            <li style="list-style: none; counter-increment: commandments">
-              <strong style="font-size: 1.1em; color: var(--accent-primary)">II. Production Standards</strong><br />
-              If you send errors from your API using our bot, you must follow production best practices. Ensure your
-              error handling is robust before piping it to an alert.
+            <li style="list-style: none; counter-increment: commandments;">
+              <strong style="font-size: 1.1em; color: var(--accent-primary);">II. Estándares de Producción</strong><br/>
+              Si vas a enviar errores de tu api con nuestro bot, utiliza las mejores prácticas de producción. Asegúrate de que tu manejo de errores es robusto antes de enviarlo como alerta.
             </li>
-            <li style="list-style: none; counter-increment: commandments">
-              <strong style="font-size: 1.1em; color: var(--accent-primary)">III. Self-Host for Customization</strong
-              ><br />
-              If you require <em>any</em> customization (no matter how simple), you shall use the self-hosted option.
-              You can host Pingui Alert anywhere; we suggest a VPS or a local server due to its minimal resource
-              footprint, but cloud options are also valid.
+            <li style="list-style: none; counter-increment: commandments;">
+              <strong style="font-size: 1.1em; color: var(--accent-primary);">III. Self-Host para Customización</strong><br/>
+              Si requieres <em>alguna</em> customización (por simple que sea), utiliza la opción de self hosted. Puedes hostear Pingui Alert en cualquier lugar; sugerimos un VPS o servidor local por los pocos recursos que consume.
             </li>
-            <li style="list-style: none; counter-increment: commandments">
-              <strong style="font-size: 1.1em; color: var(--accent-primary)">IV. Actionable Alerts</strong><br />
-              You shall ensure every alert is actionable. Every alert should prompt a specific, immediate response.
+            <li style="list-style: none; counter-increment: commandments;">
+              <strong style="font-size: 1.1em; color: var(--accent-primary);">IV. Alertas Accionables</strong><br/>
+              Asegurarás que cada alerta sea accionable. Cada alerta debe incitar una respuesta específica e inmediata.
             </li>
-            <li style="list-style: none; counter-increment: commandments">
-              <strong style="font-size: 1.1em; color: var(--accent-primary)">V. No Data Leakage</strong><br />
-              You shall not send sensitive user data (PII), identifiers, or secrets in your alerts. Keep messages safe
-              and compliant.
+            <li style="list-style: none; counter-increment: commandments;">
+              <strong style="font-size: 1.1em; color: var(--accent-primary);">V. Sin Fugas de Datos</strong><br/>
+              No enviarás datos sensibles de usuarios (PII), identificadores o secretos en tus alertas. Mantén los mensajes seguros.
             </li>
-            <li style="list-style: none; counter-increment: commandments">
-              <strong style="font-size: 1.1em; color: var(--accent-primary)">VI. Fail Safely</strong><br />
-              You shall implement error handling so that a failed alert notification never crashes your main
-              application. The alert service failure should be silent to your end users.
+            <li style="list-style: none; counter-increment: commandments;">
+              <strong style="font-size: 1.1em; color: var(--accent-primary);">VI. Fallar de Forma Segura</strong><br/>
+              Implementarás manejo de errores para que una notificación de alerta fallida nunca bloquee tu aplicación principal. El fallo del servicio de alertas debe ser silencioso para tus usuarios finales.
             </li>
           </ol>
         </section>
 
         <section id="production-usage">
-          <h2>Production Usage</h2>
+          <h2>Uso en Producción</h2>
           <p>
-            When using Pingui Alert in production environments, follow these best practices to ensure optimal service
-            quality for everyone.
+            Cuando uses Pingui Alert en entornos de producción, sigue estas mejores prácticas para asegurar un servicio
+            óptimo para todos.
           </p>
 
           <div class="info-box" style="background: rgba(251, 146, 60, 0.1); border-left-color: #fb923c">
-            <strong>⚠️ Important:</strong> If you're using the hosted <strong>@PinguiAlertBot</strong> instance in
-            production, please reserve it <strong>exclusively for critical alerts</strong> (e.g., system failures,
-            security incidents, critical errors). This helps maintain service availability for all users.
+            <strong>⚠️ Importante:</strong> Si usas la instancia hosteada de <strong>@PinguiAlertBot</strong> en
+            producción, por favor resérvala <strong>exclusivamente para alertas críticas</strong> (ej: fallos de sistema,
+            incidentes de seguridad, errores críticos). Esto ayuda a mantener la disponibilidad del servicio.
           </div>
 
-          <h3>Recommended Production Setup</h3>
-          <p>For production workloads with frequent notifications, we recommend one of these approaches:</p>
+          <h3>Configuración Recomendada</h3>
+          <p>Para cargas de trabajo en producción con notificaciones frecuentes, recomendamos uno de estos enfoques:</p>
 
           <ul class="steps-list">
             <li>
-              <strong>Self-Host Your Instance:</strong> Deploy your own Pingui Alert server and bot. This gives you full
-              control over rate limits and ensures dedicated resources.
+              <strong>Hostea tu propia Instancia:</strong> Despliega tu propio servidor y bot de Pingui Alert. Esto te da
+              control total sobre los límites de tasa y recursos dedicados.
             </li>
             <li>
-              <strong>Use for Critical Alerts Only:</strong> If using @PinguiAlertBot, implement filtering logic to send
-              only high-priority notifications (failures, errors, security events).
+              <strong>Solo Alertas Críticas:</strong> Si usas @PinguiAlertBot, implementa lógica de filtrado para enviar
+              solo notificaciones de alta prioridad.
             </li>
             <li>
-              <strong>Implement Batching:</strong> Group multiple non-critical alerts into periodic summary messages
-              instead of sending individual notifications.
+              <strong>Implementa Batching:</strong> Agrupa múltiples alertas no críticas en mensajes de resumen periódicos
+              en lugar de enviar notificaciones individuales.
             </li>
           </ul>
 
           <h3>Self-Hosting</h3>
-          <p>To self-host Pingui Alert:</p>
+          <p>Para hostear Pingui Alert:</p>
           <pre><code>git clone https://github.com/juanvidev1/pingui-alert
 cd pingui-alert
 
-# Set your environment variables
-export BOT_TOKEN="your_telegram_bot_token"
-export JWT_SECRET="your_secret_key"
-export MAX_ALERTS=100  # Customize your daily limit
+# Configura tus variables de entorno
+export BOT_TOKEN="tu_token_de_telegram"
+export JWT_SECRET="tu_clave_secreta"
+export MAX_ALERTS=100  # Personaliza tu límite diario
 
-# Install dependencies
+# Instala dependencias
 pnpm install
 
-# Run the server
+# Corre el servidor
 pnpm run dev</code></pre>
         </section>
 
         <section id="use-cases">
-          <h2>Use Cases</h2>
+          <h2>Casos de Uso</h2>
           <p>
-            Here are some clear examples of how to apply Pingui Alert in real-world scenarios, strictly adhering to the
-            <strong>Commandments</strong>.
+            Aquí tienes algunos ejemplos claros de cómo aplicar Pingui Alert en escenarios reales, cumpliendo estrictamente
+            con los <strong>Mandamientos</strong>.
           </p>
 
-          <div class="use-case-card" style="margin-bottom: 2rem">
-            <h3>1. Critical Error Monitoring (Payment Gateway)</h3>
+          <div class="use-case-card" style="margin-bottom: 2rem;">
+            <h3>1. Monitoreo de Errores Críticos (Pasarela de Pago)</h3>
             <p>
-              <strong>Scenario:</strong> A user's payment fails due to a server-side 500 error. <br />
-              <strong>Commandments Applied:</strong> I (Critical Use Only), V (No Data Leakage).
+              <strong>Escenario:</strong> El pago de un usuario falla debido a un error 500 del servidor. <br />
+              <strong>Mandamientos Aplicados:</strong> I (Uso Crítico Solamente), V (Sin Fugas de Datos).
             </p>
             <div class="code-window">
               <div class="window-header">
@@ -1803,27 +1856,27 @@ pnpm run dev</code></pre>
                 <pre><code class="language-typescript">try {
   await processPayment(orderId, amount);
 } catch (error) {
-  // ❌ BAD: Sending the full error stack or user PII
+  // ❌ MAL: Enviando el stack completo o PII del usuario
   // await client.send(`Payment failed for user ${user.email}: ${error.stack}`);
 
-  // ✅ GOOD: Actionable, specific, safe
-  logger.error(error); // Log details locally
+  // ✅ BIEN: Accionable, específico, seguro
+  logger.error(error); // Loguear detalles localmente
   await client.send(
-    `🚨 <strong>Critical: Payment Gateway Failure</strong>\n` +
-    `Gateway: Stripe\n` +
+    `🚨 <strong>Crítico: Fallo en Pasarela de Pago</strong>\n` +
+    `Pasarela: Stripe\n` +
     `OrderId: ${orderId}\n` +
-    `Action: Check Stripe Status & Logs immediately.`
+    `Acción: Revisar Estado de Stripe y Logs inmediatamente.`
   );
 }</code></pre>
               </div>
             </div>
           </div>
 
-          <div class="use-case-card" style="margin-bottom: 2rem">
-            <h3>2. System Resource Monitoring</h3>
+          <div class="use-case-card" style="margin-bottom: 2rem;">
+            <h3>2. Monitoreo de Recursos del Sistema</h3>
             <p>
-              <strong>Scenario:</strong> Server disk space is dangerously low. <br />
-              <strong>Commandments Applied:</strong> I (Critical Use Only), IV (Actionable).
+              <strong>Escenario:</strong> El espacio en disco del servidor está peligrosamente bajo. <br />
+              <strong>Mandamientos Aplicados:</strong> I (Uso Crítico), IV (Accionable).
             </p>
             <div class="code-window">
               <div class="window-header">
@@ -1836,24 +1889,24 @@ pnpm run dev</code></pre>
                 <pre><code class="language-bash">#!/bin/bash
 USAGE=$(df / | grep / | awk '{ print $5 }' | sed 's/%//g')
 
-# Only alert if usage is > 90% (Critical)
+# Solo alertar si el uso es > 90% (Crítico)
 if [ "$USAGE" -gt 90 ]; then
   curl -X POST https://api.pingui-alert.dev/alert \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
     -d '{
-      "alert": "💾 <strong>Server Disk Critical</strong>\nUsage is at '"$USAGE"'%.\nClean up logs or expand volume NOW."
+      "alert": "💾 <strong>Crítico: Disco del Servidor</strong>\nUso al '"$USAGE"'%.\nLimpiar logs o expandir volumen AHORA."
     }'
 fi</code></pre>
               </div>
             </div>
           </div>
 
-          <div class="use-case-card" style="margin-bottom: 2rem">
-            <h3>3. Security Incidents</h3>
+          <div class="use-case-card" style="margin-bottom: 2rem;">
+            <h3>3. Incidentes de Seguridad</h3>
             <p>
-              <strong>Scenario:</strong> Multiple failed login attempts detected from a single IP (Brute Force). <br />
-              <strong>Commandments Applied:</strong> I (Critical), V (No PII).
+              <strong>Escenario:</strong> Múltiples intentos de login fallidos detectados desde una misma IP (Brute Force). <br />
+              <strong>Mandamientos Aplicados:</strong> I (Crítico), V (Sin PII).
             </p>
             <div class="code-window">
               <div class="window-header">
@@ -1864,14 +1917,14 @@ fi</code></pre>
               </div>
               <div class="code-content">
                 <pre><code class="language-typescript">if (failedAttempts > 10) {
-  // Block IP logic...
+  // Lógica de bloqueo de IP...
 
-  // Alert Security Team
+  // Alertar al Equipo de Seguridad
   await client.send(
-    `🛡️ <strong>Security Alert: Brute Force Detected</strong>\n` +
+    `🛡️ <strong>Alerta de Seguridad: Brute Force Detectado</strong>\n` +
     `IP: ${req.ip}\n` +
-    `Attempts: ${failedAttempts}\n` +
-    `Action: IP has been temporarily banned. Verify traffic source.`
+    `Intentos: ${failedAttempts}\n` +
+    `Acción: IP baneada temporalmente. Verificar origen del tráfico.`
   );
 }</code></pre>
               </div>
@@ -1879,10 +1932,10 @@ fi</code></pre>
           </div>
 
           <div class="use-case-card">
-            <h3>4. Background Job Failures</h3>
+            <h3>4. Fallos en Tareas de Fondo</h3>
             <p>
-              <strong>Scenario:</strong> A nightly backup job fails. <br />
-              <strong>Commandments Applied:</strong> IV (Actionable), VI (Fail Safely).
+              <strong>Escenario:</strong> Un backup nocturno falla. <br />
+              <strong>Mandamientos Aplicados:</strong> IV (Accionable), VI (Fallar Seguro).
             </p>
             <div class="code-window">
               <div class="window-header">
@@ -1895,13 +1948,13 @@ fi</code></pre>
                 <pre><code class="language-typescript">job.on('failed', async (err) => {
   try {
     await client.send(
-      `💥 <strong>Backup Job Failed</strong>\n` +
+      `💥 <strong>Fallo en Job de Backup</strong>\n` +
       `Job: nightly_db_backup\n` +
       `Error: Connection timeout\n` +
-      `Action: Manually retry backup via admin panel.`
+      `Acción: Reintentar backup manualmente vía panel de admin.`
     );
   } catch (alertError) {
-    // Fail safely - do not crash the worker if alert fails
+    // Fallar seguro - no crashear el worker si la alerta falla
     console.error('Failed to send alert:', alertError);
   }
 });</code></pre>
@@ -1913,7 +1966,7 @@ fi</code></pre>
     </div>
 
     <footer>
-      <p>&copy; 2025 Pingui Alert. Built with ❤️ by <a href="https://github.com/juanvidev1">Juan Vicente</a>.</p>
+      <p>&copy; 2025 Pingui Alert. Construido con ❤️ por <a href="https://github.com/juanvidev1">Juan Vicente</a>.</p>
     </footer>
   </body>
 </html>

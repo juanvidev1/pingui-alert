@@ -17,11 +17,15 @@ app.get('/', async (c) => {
   });
 });
 
-// app.get('/docs', async (c) => {
-//   const publicDir = path.join(process.cwd(), 'src', 'public');
-//   const docsPath = path.join(publicDir, 'docs.html');
-//   return c.html(Bun.file(docsPath));
-// });
+app.get('/es', async (c) => {
+  const publicDir = path.join(process.cwd(), 'src', 'public');
+  const indexPath = path.join(publicDir, 'docs_es.html');
+  const htmlContent = readFileSync(indexPath, 'utf-8');
+
+  return c.html(htmlContent, 200, {
+    'Content-Type': 'text/html'
+  });
+});
 
 app.post('/temporal-token', async (c) => {
   const { chatId } = await c.req.json();

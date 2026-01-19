@@ -79,6 +79,24 @@ pnpm run start
 
 The project uses SQLite by default. Ensure the `./storage` directory exists or is created by the application/ORM.
 
+## The Commandments
+
+To keep Pingui Alert useful and stable for everyone, we adhere to a strict set of rules.
+
+1.  **Critical Use Only**: Use it only for critical alerts that must be corrected immediately.
+2.  **Production Standards**: If sending errors, follow production best practices.
+3.  **Self-Host for Customization**: For any customization, use the self-hosted option.
+4.  **Actionable Alerts**: Ensure every alert is actionable.
+5.  **No Data Leakage**: Never send sensitive user data (PII) or secrets.
+6.  **Fail Safely**: Ensure alert failures do not crash your application.
+
+## Use Cases
+
+- **Critical Error Monitoring**: Payment gateway failures, 500 errors.
+- **System Resource Monitoring**: Low disk space, high RAM usage.
+- **Security Incidents**: Brute force attempts, suspicious activities.
+- **Background Job Failures**: Backup failures, cron job errors.
+
 ## License
 
 ISC
