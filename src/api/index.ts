@@ -3,6 +3,7 @@ import { IntegrationService } from '../services/integration.service.js';
 import { verifyJwtToken, validateStatus, verifyTemporalToken } from '../middlewares/index.js';
 import path from 'path';
 import { readFile, readFileSync } from 'fs';
+import bot from '../bot/index.js';
 
 const app = new Hono();
 
@@ -37,13 +38,11 @@ app.post('/temporal-token', async (c) => {
 app.post('/alert', verifyJwtToken, validateStatus, async (c) => {
   const data: any = await c.req.json();
 
-  console.log(data);
-
   if (!data.title || !data.message || !data.chatId) {
     return c.json({ error: 'Missing required fields' }, 400);
   }
 
-  console.log(data.title, data.message, data.chatId);
+  bot.api.sendMessage(data.chatId, `${data.title}\n${data.message}`);
 
   return c.json({ message: 'Alert received' });
 });
@@ -90,7 +89,7 @@ app.get('/integrations/:chatId', verifyJwtToken, async (c) => {
   return c.json({ integrations });
 });
 
-app.post('/update-rate-limit', verifyJwtToken, validateStatus, async (c) => {
+app.post('/updateRateLimit', verifyJwtToken, validateStatus, async (c) => {
   const { chatId, rateLimit }: any = await c.req.json();
 
   console.log(chatId, rateLimit);

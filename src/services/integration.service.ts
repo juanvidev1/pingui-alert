@@ -134,6 +134,11 @@ export class IntegrationService {
       if (!integration) {
         throw new Error('Integration not found');
       }
+
+      if (rateLimit && rateLimit > 10) {
+        throw new Error('Rate limit cannot be greater than 10 on public bot');
+      }
+
       await integration.update({
         rateLimit: rateLimit || integration.dataValues.rateLimit - 1,
         updatedAt: new Date()
