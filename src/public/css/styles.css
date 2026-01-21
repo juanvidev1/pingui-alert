@@ -567,7 +567,8 @@ pre code {
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
   width: 100%;
-  max-width: 500px;
+  max-width: 650px;
+  margin: auto;
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
