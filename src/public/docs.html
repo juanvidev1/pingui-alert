@@ -15,13 +15,13 @@
   <body>
     <nav class="navbar">
       <div class="logo">
-        <img src="../public/images/PinguiAlert1.png" alt="Pingui Alert" style="width: 38%" />
+        <img src="../public/images/PinguiAlert1.png" alt="Pingui Alert" style="width: 30%" />
         <a href="/" style="text-decoration: none; color: inherit">Pingui Alert</a> <span class="badge">Beta</span>
       </div>
       <div class="nav-links">
         <a href="/docs" class="nav-link active">Documentation</a>
         <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="nav-link">GitHub</a>
-        <a href="/es" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
+        <a href="/docs/es" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
           <span style="font-size: 1.1em">🇪🇸</span> ES
         </a>
       </div>
@@ -29,36 +29,47 @@
 
     <div class="docs-container">
       <aside class="sidebar">
-        <div class="sidebar-group">
-          <h3>Getting Started</h3>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Getting Started</h3>
+          </summary>
           <a href="#introduction" class="sidebar-link">Introduction</a>
           <a href="#setup" class="sidebar-link">Setup & Auth</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>API Reference</h3>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Best Practices</h3>
+          </summary>
+          <a href="#commandments" class="sidebar-link">The Commandments</a>
+          <a href="#production-usage" class="sidebar-link">Production Usage</a>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>API Reference</h3>
+          </summary>
           <a href="#send-alert" class="sidebar-link">Send Alert</a>
           <a href="#create-integration" class="sidebar-link">Create Integration</a>
           <a href="#get-integration" class="sidebar-link">Get Integration</a>
           <a href="#update-rate-limit" class="sidebar-link">Update Rate Limit</a>
           <a href="#revoke-integration" class="sidebar-link">Revoke Integration</a>
           <a href="#check-quota" class="sidebar-link">Check Quota</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>SDKs</h3>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>SDKs</h3>
+          </summary>
           <a href="#npm-package" class="sidebar-link">Node.js / TypeScript</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>Best Practices</h3>
-          <a href="#commandments" class="sidebar-link">The Commandments</a>
-          <a href="#production-usage" class="sidebar-link">Production Usage</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>Use cases</h3>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Use cases</h3>
+          </summary>
           <a href="#use-cases" class="sidebar-link">Use cases</a>
-        </div>
+        </details>
       </aside>
 
       <main class="docs-content">
+        <!-- Introduction -->
         <section id="introduction">
           <h1>Introduction</h1>
           <p>
@@ -68,6 +79,7 @@
           </p>
         </section>
 
+        <!-- Setup & Authentication -->
         <section id="setup">
           <h2>Setup & Authentication</h2>
           <p>To start sending alerts, you need to obtain an API Key from our Telegram bot.</p>
@@ -88,236 +100,7 @@
           </div>
         </section>
 
-        <section id="send-alert">
-          <h2>Send an Alert</h2>
-          <p>Send a POST request to the <code>/alert</code> endpoint to deliver a message.</p>
-
-          <div class="endpoint-badge">POST /alert</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token received from the bot.</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "alert": "Your message here"
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui.com/alert \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"alert": "Hello from my server!"}'</code></pre>
-        </section>
-
-        <section id="create-integration">
-          <h2>Create Integration</h2>
-          <p>
-            Create a new integration for a specific chat using the temporal token. The scope is a string open to the
-            user criteria
-          </p>
-
-          <div class="endpoint-badge">POST /createIntegration</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;TEMPORAL_TOKEN&gt;</code></td>
-                <td>The temporal token received from the /temporal_token command.</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "chatId": 123456789,
-  "scope": "prod"
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui-alert.dev/createIntegration \
-  -H "Authorization: Bearer YOUR_TEMPORAL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"chatId": 123456789, "scope": "prod"}'</code></pre>
-        </section>
-
-        <section id="get-integration">
-          <h2>Get Integration</h2>
-          <p>Retrieve details about a specific integration.</p>
-
-          <div
-            class="endpoint-badge"
-            style="color: #3b82f6; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3)"
-          >
-            GET /integrations/:chatId
-          </div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token (API Key).</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X GET https://api.pingui-alert.dev/integrations/123456789 \
-  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
-        </section>
-
-        <section id="update-rate-limit">
-          <h2>Update Rate Limit</h2>
-          <p>Update the rate limit for a specific integration.</p>
-
-          <div class="endpoint-badge">POST /updateRateLimit</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token (API Key).</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "chatId": 123456789,
-  "rateLimit": 50
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui-alert.dev/updateRateLimit \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"chatId": 123456789, "rateLimit": 50}'</code></pre>
-        </section>
-
-        <section id="revoke-integration">
-          <h2>Revoke Integration</h2>
-          <p>Revoke (deactivate) an integration.</p>
-
-          <div class="endpoint-badge">POST /revokeIntegration</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token (API Key).</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "chatId": 123456789
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui-alert.dev/revokeIntegration \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"chatId": 123456789}'</code></pre>
-        </section>
-
-        <section id="npm-package">
-          <h2>NPM Package</h2>
-          <p>
-            If you are using Node.js or TypeScript, we recommend using our official package in case you just want to
-            send alerts using Pingui Alert server. Rate limit and quota are handled by the server and you need to still
-            use the endpoint createIntegration to get your permanent API KEY.
-          </p>
-
-          <h3>Installation</h3>
-          <pre><code>npm install pingui-alert</code></pre>
-
-          <h3>Usage</h3>
-          <ol>
-            <li>
-              Follow the steps in the <a href="#create-integration">Create Integration</a> section to get your permanent
-              API KEY.
-            </li>
-            <li>On the public bot use the command /get_me to get your chatId.</li>
-            <li>Use the API KEY and chatId in the code below:</li>
-          </ol>
-          <pre><code>import { Pingui } from 'pingui-alert';
-
-const client = new Pingui('YOUR_API_KEY');
-
-await client.send('Database backup completed successfully! ✅', 'YOUR_CHAT_ID');</code></pre>
-        </section>
-
+        <!-- Commandments -->
         <section id="commandments">
           <h2>The Commandments</h2>
           <p>
@@ -365,6 +148,7 @@ await client.send('Database backup completed successfully! ✅', 'YOUR_CHAT_ID')
           </ol>
         </section>
 
+        <!-- Production Usage -->
         <section id="production-usage">
           <h2>Production Usage</h2>
           <p>
@@ -411,6 +195,274 @@ pnpm install
 
 # Run the server
 pnpm run dev</code></pre>
+        </section>
+
+        <h2>API Reference</h2>
+        <p>Here you can find the API reference for the Pingui Alert service.</p>
+        <!-- Send Alert -->
+        <details>
+          <summary id="send-alert">
+            <h2>Send an Alert</h2>
+            <p>Send a POST request to the <code>/alert</code> endpoint to deliver a message.</p>
+          </summary>
+
+          <section>
+            <h2>Send an Alert</h2>
+            <p>Send a POST request to the <code>/alert</code> endpoint to deliver a message.</p>
+
+            <div class="endpoint-badge">POST /alert</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Your permanent JWT token received from <code>/createIntegration</code> endpoint.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Required.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+    "title": "Your title here",
+    "message": "Your message here",
+    "chatId": "The telegram chat id where the alert will be sent"
+  }</code></pre>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://api.pingui.com/alert \
+    -H "Authorization: Bearer YOUR_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"title": "Your title here", "message": "Your message here", "chatId": "The telegram chat id where the alert will be sent"}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Create Integration -->
+        <details>
+          <summary id="create-integration">
+            <h2>Create Integration</h2>
+            <p>
+              Create a new integration for a specific chat using the temporal token. The scope is a string open to the
+              user criteria
+            </p>
+          </summary>
+
+          <div class="endpoint-badge">POST /createIntegration</div>
+
+          <h3>Headers</h3>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Value</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Authorization</code></td>
+                <td><code>Bearer &lt;TEMPORAL_TOKEN&gt;</code></td>
+                <td>The temporal token received from the /temporal_token command.</td>
+              </tr>
+              <tr>
+                <td><code>Content-Type</code></td>
+                <td><code>application/json</code></td>
+                <td>Required.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Body</h3>
+          <pre><code>{
+  "chatId": 123456789,
+  "scope": "prod"
+}</code></pre>
+
+          <h3>Example (cURL)</h3>
+          <pre><code>curl -X POST https://api.pingui-alert.dev/createIntegration \
+  -H "Authorization: Bearer YOUR_TEMPORAL_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"chatId": 123456789, "scope": "prod"}'</code></pre>
+        </section>
+        </details>
+
+        <!-- Get Integration -->
+        <details>
+          <summary id="get-integration">
+            <h2>Get Integration</h2>
+            <p>Retrieve details about a specific integration.</p>
+          </summary>
+          <section>
+            <h2>Get Integration</h2>
+            <p>Retrieve details about a specific integration.</p>
+  
+            <div
+              class="endpoint-badge"
+              style="color: #3b82f6; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3)"
+            >
+              GET /integrations/:chatId
+            </div>
+  
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Your JWT token (API Key).</td>
+                </tr>
+              </tbody>
+            </table>
+  
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X GET https://api.pingui-alert.dev/integrations/123456789 \
+    -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+          </section>
+        </details>
+        
+        <!-- Update Rate Limit -->
+        <details>
+          <summary id="update-rate-limit">
+            <h2>Update Rate Limit</h2>
+            <p>Update the rate limit for a specific integration.</p>
+          </summary>
+          <section>
+            
+  
+            <div
+              class="endpoint-badge"
+              style="color: #3b82f6; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3)"
+            >
+              POST /updateRateLimit
+            </div>
+  
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Your JWT token (API Key).</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Required.</td>
+                </tr>
+              </tbody>
+            </table>
+  
+            <h3>Body</h3>
+            <pre><code>{
+    "chatId": 123456789,
+    "rateLimit": 50
+  }</code></pre>
+  
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://api.pingui-alert.dev/updateRateLimit \
+    -H "Authorization: Bearer YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"chatId": 123456789, "rateLimit": 50}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Revoke Integration -->
+         <details>
+          <summary id="revoke-integration">
+            <h2>Revoke Integration</h2>
+            <p>Revoke (deactivate) an integration.</p>
+          </summary>
+          <section>
+            <div class="endpoint-badge">POST /revokeIntegration</div>
+  
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Your JWT token (API Key).</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Required.</td>
+                </tr>
+              </tbody>
+            </table>
+  
+            <h3>Body</h3>
+            <pre><code>{
+    "chatId": 123456789
+  }</code></pre>
+  
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://api.pingui-alert.dev/revokeIntegration \
+    -H "Authorization: Bearer YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"chatId": 123456789}'</code></pre>
+          </section>
+         </details>
+
+        <section id="npm-package">
+          <h2>NPM Package</h2>
+          <p>
+            If you are using Node.js or TypeScript, we recommend using our official package in case you just want to
+            send alerts using Pingui Alert server. Rate limit and quota are handled by the server and you need to still
+            use the endpoint createIntegration to get your permanent API KEY.
+          </p>
+
+          <h3>Installation</h3>
+          <pre><code>npm install pingui-alert</code></pre>
+
+          <h3>Usage</h3>
+          <ol>
+            <li>
+              Follow the steps in the <a href="#create-integration">Create Integration</a> section to get your permanent
+              API KEY.
+            </li>
+            <li>On the public bot use the command /get_me to get your chatId.</li>
+            <li>Use the API KEY and chatId in the code below:</li>
+          </ol>
+          <pre><code>import { Pingui } from 'pingui-alert';
+
+const client = new Pingui('YOUR_API_KEY');
+
+await client.send('Database backup completed successfully! ✅', 'YOUR_CHAT_ID');</code></pre>
         </section>
 
         <section id="use-cases">

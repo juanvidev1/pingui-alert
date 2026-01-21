@@ -73,6 +73,7 @@ body {
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding-top: 80px; /* Space for fixed navbar */
 }
 
 /* ============================================
@@ -103,7 +104,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  min-height: 100vh;
+  min-height: auto; /* Changed from 100vh to auto since body has min-height */
 }
 
 /* ============================================
@@ -114,10 +115,18 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 1%;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 1rem 5%;
   width: 100%;
+  max-width: 100%; /* Ensure full width */
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 12, 0.8); /* Semi-transparent background */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .logo {
@@ -127,6 +136,22 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  height: 48px; /* Fixed height for container */
+}
+
+.logo img {
+  height: 100%; /* Constrain image to container height */
+  width: auto !important; /* Override inline styles */
+  object-fit: contain;
+}
+
+.badge {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .badge {
@@ -997,7 +1022,7 @@ main {
   gap: 4rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 5%;
+  padding: 4rem 5% 2rem; /* Increased top padding to 4rem */
   min-height: calc(100vh - 200px);
 }
 
@@ -1011,7 +1036,7 @@ main {
 /* Sidebar */
 .sidebar {
   position: sticky;
-  top: 2rem;
+  top: 8rem; /* Adjusted for wider spacing */
   height: fit-content;
   padding: 1.5rem;
   background: var(--card-bg);
@@ -1072,7 +1097,14 @@ main {
 
 .docs-content section {
   margin-bottom: 4rem;
-  scroll-margin-top: 2rem;
+  scroll-margin-top: 150px; /* Large offset to clear navbar */
+}
+
+/* Ensure headings also have the offset in case they are targeted directly */
+.docs-content h1,
+.docs-content h2,
+.docs-content h3 {
+  scroll-margin-top: 150px;
 }
 
 .docs-content h1 {
@@ -1100,6 +1132,7 @@ main {
   color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: 1.5rem;
+  padding: 0 2rem;
   font-size: 1.05rem;
 }
 
@@ -1293,6 +1326,129 @@ footer a:hover {
 
 .fade-in-up {
   animation: fadeInUp 0.6s ease-out;
+}
+
+/* ============================================
+   DETAILS & SUMMARY
+   ============================================ */
+
+details {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+details[open] {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: var(--card-bg-hover);
+}
+
+summary {
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  background: rgba(255, 255, 255, 0.02);
+  transition: var(--transition);
+  color: var(--text-primary);
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+summary::after {
+  content: '+';
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--accent-primary);
+  transition: transform 0.3s ease;
+  line-height: 1;
+}
+
+details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+details[open] summary {
+  border-bottom: 1px solid var(--border-color);
+}
+
+details > *:not(summary) {
+  padding: 1.5rem;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+/* Sidebar Details Overrides */
+details.sidebar-group {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 2rem;
+  overflow: visible;
+}
+
+details.sidebar-group[open] {
+  background: transparent;
+  border-color: transparent;
+}
+
+details.sidebar-group summary {
+  padding: 0;
+  margin-bottom: 0.5rem;
+  background: transparent;
+  border: none;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+details.sidebar-group summary:hover {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+details.sidebar-group summary h3 {
+  margin: 0;
+  display: inline-block;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+details.sidebar-group summary::after {
+  content: '›';
+  font-size: 1.2rem;
+  order: -1;
+  transition: transform 0.2s ease;
+  line-height: 0.8;
+  color: var(--text-secondary);
+}
+
+details.sidebar-group[open] summary::after {
+  transform: rotate(90deg);
+}
+
+details.sidebar-group[open] summary {
+  border-bottom: none;
+}
+
+details.sidebar-group > *:not(summary) {
+  padding: 0;
+  animation: none;
+  margin-bottom: 0.3rem;
+  display: block;
 }
 
 /* ============================================

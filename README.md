@@ -6,6 +6,7 @@ Pingui Alert is a lightweight notification service that allows you to send alert
 
 - **Node.js**: v20 or higher recommended.
 - **pnpm**: v9 or higher (PackageManager specified in package.json is `pnpm@9.15.1`).
+- **Redis**: A Redis server (local or hosted) is required for the public bot's queue system. Set the `REDIS_URL` environment variable (e.g., `redis://localhost:6379`).
 
 ## Installation
 

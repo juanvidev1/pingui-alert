@@ -25,19 +25,19 @@ export class Logger {
 
   public static infoLog(log: Log) {
     const date = new Date().toISOString();
-    const logFile = path.join(logPath, `info-${date}.log`);
+    const logFile = path.join(logPath, `info.log`);
     fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
   }
 
   public static warnLog(log: Log) {
     const date = new Date().toISOString();
-    const logFile = path.join(logPath, `warn-${date}.log`);
+    const logFile = path.join(logPath, `warn.log`);
     fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
   }
 
   public static debugLog(log: Log) {
     const date = new Date().toISOString();
-    const logFile = path.join(logPath, `debug-${date}.log`);
+    const logFile = path.join(logPath, `debug.log`);
     fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
   }
 }

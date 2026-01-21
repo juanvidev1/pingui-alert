@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pingui Alert - Simple Alerts for Developers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./public/css/styles.css" />
+  </head>
+  <body>
+    <!-- Background Glow -->
+    <div class="background-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo">
+        <img src="./public/images/PinguiAlert1.png" alt="Pingui Alert" style="width: 30%" />
+        <a href="/" style="text-decoration: none; color: inherit; margin-left: 0.5rem">Pingui Alert</a>
+        <span class="badge">Beta</span>
+      </div>
+      <div class="nav-links">
+        <a href="/docs" class="nav-link">Documentation</a>
+        <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="nav-link">GitHub</a>
+        <a href="/es" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
+          <span style="font-size: 1.1em">🇪🇸</span> ES
+        </a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <h1 class="fade-in-down">
+            Alerts for <span class="gradient-text">Developers</span>,<br />
+            hassle-free.
+          </h1>
+          <p class="subtitle fade-in-up" style="animation-delay: 0.1s">
+            The simplest way to send critical notifications from your code to Telegram. Open Source, free, and designed
+            to stay out of your way.
+          </p>
+          <div class="cta-group fade-in-up" style="animation-delay: 0.2s">
+            <a href="/docs" class="btn btn-gradient">Get Started</a>
+            <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="btn btn-secondary">
+              <img src="https://simpleicons.org/icons/github.svg" alt="" style="width: 1.2em; filter: invert(1)" />
+              View on GitHub
+            </a>
+          </div>
+        </div>
+        <div class="hero-visual fade-in-up" style="animation-delay: 0.3s">
+          <div class="code-window">
+            <div class="window-header">
+              <div class="dot red"></div>
+              <div class="dot yellow"></div>
+              <div class="dot green"></div>
+              <div class="window-title">curl-example.sh</div>
+            </div>
+            <div class="code-content">
+              <pre><code class="language-bash">curl -X POST https://api.pingui-alert.dev/alert \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Critical alert",
+    "message": "This is a critical alert",
+    "chatId": 123456789
+  }'</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Grid -->
+      <section class="features">
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/pinguiIFor-icon.png" alt="Pingui Alert" style="width: 37%; height: auto" />
+          </div>
+          <h3>Dead Simple</h3>
+          <p>No complicated dashboards or infinite configurations. One API Key and one endpoint. That's it.</p>
+        </div>
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/shield-icon.png" alt="Pingui Alert" style="width: 37%; height: auto" />
+          </div>
+          <h3>Privacy First</h3>
+          <p>We don't store your logs. We just process the message and deliver it to Telegram. Your data is yours.</p>
+        </div>
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/pinguiInv-icon.png" alt="Pingui Alert" style="width: 37%; height: auto" />
+          </div>
+          <h3>Open Source</h3>
+          <p>Transparent and auditable code. Self-host it if you prefer total control over your infrastructure.</p>
+        </div>
+      </section>
+
+      <!-- The Commandments -->
+      <section
+        class="section-header"
+        style="margin-bottom: 2rem; padding-top: 4rem; border-top: 1px solid var(--border-color)"
+      >
+        <h2>The Commandments</h2>
+        <p>Strict rules to keep the ecosystem healthy</p>
+      </section>
+
+      <section class="features" style="padding-top: 0; border-top: none; margin-top: 0">
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/warn-icon.png" alt="Warning" style="width: 37%; height: auto" />
+          </div>
+          <h3>I. Critical Use Only</h3>
+          <p>
+            You shall use it only for critical alerts that must be corrected immediately. Design your system to avoid
+            alert storms.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/server-icon.png" alt="Server" style="width: 37%; height: auto" />
+          </div>
+          <h3>II. Production Standards</h3>
+          <p>Ensure your error handling is robust before piping it to an alert. Don't use us as a logger.</p>
+        </div>
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/cloud-icon.png" alt="Cloud" style="width: 37%; height: auto" />
+          </div>
+          <h3>III. Self-Host for Customization</h3>
+          <p>If you require any customization, use the self-hosted option. It's lightweight and easy to deploy.</p>
+        </div>
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/pinguiAlert-icon.png" alt="Alert" style="width: 37%; height: auto" />
+          </div>
+          <h3>IV. Actionable Alerts</h3>
+          <p>Every alert should prompt a specific, immediate response. If it's not actionable, it's not an alert.</p>
+        </div>
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/shield-icon.png" alt="Shield" style="width: 37%; height: auto" />
+          </div>
+          <h3>V. No Data Leakage</h3>
+          <p>You shall not send sensitive user data (PII), identifiers, or secrets. Keep messages safe.</p>
+        </div>
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/health-icon.png" alt="Health" style="width: 37%; height: auto" />
+          </div>
+          <h3>VI. Fail Safely</h3>
+          <p>A failed alert notification should never crash your main application. Handle errors gracefully.</p>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section id="how-it-works" style="padding: 4rem 0">
+        <div class="section-header">
+          <h2>How it works</h2>
+          <p>Three steps to production-ready alerts</p>
+        </div>
+
+        <div class="steps-list" style="max-width: 600px; margin: 0 auto">
+          <div class="card" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem">
+            <div class="icon-small" style="font-size: 1.2rem; min-width: 40px; height: 40px">1</div>
+            <div>
+              <strong style="display: block; color: var(--text-primary)">Start the Bot</strong>
+              <span style="font-size: 0.9rem">Talk to @PinguiAlertBot on Telegram</span>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem">
+            <div class="icon-small" style="font-size: 1.2rem; min-width: 40px; height: 40px">2</div>
+            <div>
+              <strong style="display: block; color: var(--text-primary)">Get your Token</strong>
+              <span style="font-size: 0.9rem">Use /temporal_token to authenticate</span>
+            </div>
+          </div>
+          <div class="card" style="display: flex; align-items: center; gap: 1rem">
+            <div class="icon-small" style="font-size: 1.2rem; min-width: 40px; height: 40px">3</div>
+            <div>
+              <strong style="display: block; color: var(--text-primary)">Send Alerts</strong>
+              <span style="font-size: 0.9rem">Integrate the endpoint into your app and you're set</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center" style="margin-top: 3rem">
+          <a href="/docs" class="btn btn-secondary">Read Full Documentation →</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container" style="min-height: auto">
+        <p>&copy; 2025 Pingui Alert. Built with ❤️ for devs.</p>
+        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center">
+          <a href="/docs">Docs</a>
+          <a href="https://github.com/juanvidev1/pingui-alert">GitHub</a>
+          <a href="#">Status</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

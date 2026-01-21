@@ -7,12 +7,23 @@ import bot from '../bot/index.js';
 import { Logger } from '../logger/index.js';
 import { generateUniqueId, hashChatId } from '../utils/index.js';
 import { serveStatic } from '@hono/node-server/serve-static';
+import { enqueueAlert } from '../services/queue.service.js';
 
 const app = new Hono();
 
 app.use('/public/*', serveStatic({ root: './src' }));
 
 app.get('/', async (c) => {
+  const publicDir = path.join(process.cwd(), 'src', 'public');
+  const indexPath = path.join(publicDir, 'index.html');
+  const htmlContent = readFileSync(indexPath, 'utf-8');
+
+  return c.html(htmlContent, 200, {
+    'Content-Type': 'text/html'
+  });
+});
+
+app.get('/docs', async (c) => {
   const publicDir = path.join(process.cwd(), 'src', 'public');
   const indexPath = path.join(publicDir, 'docs.html');
   const htmlContent = readFileSync(indexPath, 'utf-8');
@@ -23,6 +34,16 @@ app.get('/', async (c) => {
 });
 
 app.get('/es', async (c) => {
+  const publicDir = path.join(process.cwd(), 'src', 'public');
+  const indexPath = path.join(publicDir, 'index_es.html');
+  const htmlContent = readFileSync(indexPath, 'utf-8');
+
+  return c.html(htmlContent, 200, {
+    'Content-Type': 'text/html'
+  });
+});
+
+app.get('/docs/es', async (c) => {
   const publicDir = path.join(process.cwd(), 'src', 'public');
   const indexPath = path.join(publicDir, 'docs_es.html');
   const htmlContent = readFileSync(indexPath, 'utf-8');
@@ -49,26 +70,35 @@ app.post('/temporal-token', async (c) => {
 app.post('/alert', verifyJwtToken, validateRateLimit, validateStatus, async (c) => {
   const data: any = await c.req.json();
 
-  if (!data.title || !data.message || !data.chatId) {
-    Logger.errorLog({ chatId: data.chatId, message: 'Missing required fields' });
+  const requestId = generateUniqueId(true);
+  if (!data.message || !data.chatId) {
+    Logger.errorLog({ chatId: Number(requestId), message: 'Missing required fields' });
     bot.api.sendMessage(
       data.chatId,
       'There was a problem sendig the alert because all the required fields are not present. See the api reference for more information'
     );
+
     return c.json({ error: 'Missing required fields' }, 400);
   }
 
   const integration = await IntegrationService.changeRateLimit(data.chatId);
 
   if (!integration) {
-    Logger.errorLog({ chatId: data.chatId, message: 'Integration not found' });
+    Logger.errorLog({ chatId: Number(requestId), message: 'Integration not found' });
     bot.api.sendMessage(data.chatId, 'There was a problem sendig the alert because the integration was not found');
     return c.json({ error: 'Integration not found' }, 404);
   }
 
-  bot.api.sendMessage(data.chatId, `${data.title}\n${data.message}`);
+  // bot.api.sendMessage(data.chatId, `${data.title}\n${data.message}`);
 
-  return c.json({ message: 'Alert received' });
+  await enqueueAlert({
+    id: generateUniqueId(false),
+    chatId: data.chatId,
+    title: data.title || 'Alert',
+    message: data.message
+  });
+
+  return c.json({ message: 'Alert enqueued' });
 });
 
 app.post('/createIntegration', verifyTemporalToken, async (c) => {

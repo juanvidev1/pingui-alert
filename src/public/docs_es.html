@@ -15,13 +15,13 @@
   <body>
     <nav class="navbar">
       <div class="logo">
-        <img src="../public/images/PinguiAlert1.png" alt="Pingui Alert" style="width: 38%;"/>
+        <img src="../public/images/PinguiAlert1.png" alt="Pingui Alert" style="width: 30%" />
         <a href="/" style="text-decoration: none; color: inherit">Pingui Alert</a> <span class="badge">Beta</span>
       </div>
       <div class="nav-links">
         <a href="/es" class="nav-link active">Documentación</a>
         <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="nav-link">GitHub</a>
-        <a href="/" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
+        <a href="/docs" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
           <span style="font-size: 1.1em">🇺🇸</span> EN
         </a>
       </div>
@@ -29,33 +29,43 @@
 
     <div class="docs-container">
       <aside class="sidebar">
-        <div class="sidebar-group">
-          <h3>Primeros Pasos</h3>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Primeros Pasos</h3>
+          </summary>
           <a href="#introduction" class="sidebar-link">Introducción</a>
           <a href="#setup" class="sidebar-link">Configuración y Auth</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>Referencia API</h3>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Buenas Prácticas</h3>
+          </summary>
+          <a href="#commandments" class="sidebar-link">Los Mandamientos</a>
+          <a href="#production-usage" class="sidebar-link">Uso en Producción</a>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Referencia API</h3>
+          </summary>
           <a href="#send-alert" class="sidebar-link">Enviar Alerta</a>
           <a href="#create-integration" class="sidebar-link">Crear Integración</a>
           <a href="#get-integration" class="sidebar-link">Obtener Integración</a>
           <a href="#update-rate-limit" class="sidebar-link">Actualizar Rate Limit</a>
           <a href="#revoke-integration" class="sidebar-link">Revocar Integración</a>
           <a href="#check-quota" class="sidebar-link">Verificar Cuota</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>SDKs</h3>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>SDKs</h3>
+          </summary>
           <a href="#npm-package" class="sidebar-link">Node.js / TypeScript</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>Buenas Prácticas</h3>
-          <a href="#commandments" class="sidebar-link">Los Mandamientos</a>
-          <a href="#production-usage" class="sidebar-link">Uso en Producción</a>
-        </div>
-        <div class="sidebar-group">
-          <h3>Casos de Uso</h3>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Casos de Uso</h3>
+          </summary>
           <a href="#use-cases" class="sidebar-link">Casos de Uso</a>
-        </div>
+        </details>
       </aside>
 
       <main class="docs-content">
@@ -63,8 +73,8 @@
           <h1>Introducción</h1>
           <p>
             Pingui Alert es un servicio de notificación ligero que te permite enviar alertas a tu cuenta de Telegram
-            directamente desde tu código. Está diseñado para ser extremadamente simple de usar, sin requerir configuración
-            en tu servidor.
+            directamente desde tu código. Está diseñado para ser extremadamente simple de usar, sin requerir
+            configuración en tu servidor.
           </p>
         </section>
 
@@ -81,335 +91,62 @@
             <li>Usa la API para crear tu primera integración y comenzar a enviar alertas.</li>
           </ol>
           <div class="info-box">
-            <strong>Nota:</strong> El servicio es completamente gratuito. El límite de 10 alertas por día ayuda a prevenir
-            la degradación del servicio debido a los límites de la API de Telegram y las restricciones de capacidad del servidor en @PinguiAlertBot. Si tu
-            instancia es self-hosted, puedes aumentar el límite configurando la variable de entorno <code>MAX_ALERTS</code>.
+            <strong>Nota:</strong> El servicio es completamente gratuito. El límite de 10 alertas por día ayuda a
+            prevenir la degradación del servicio debido a los límites de la API de Telegram y las restricciones de
+            capacidad del servidor en @PinguiAlertBot. Si tu instancia es self-hosted, puedes aumentar el límite
+            configurando la variable de entorno <code>MAX_ALERTS</code>.
           </div>
         </section>
 
-        <section id="send-alert">
-          <h2>Enviar una Alerta</h2>
-          <p>Envía una petición POST al endpoint <code>/alert</code> para entregar un mensaje.</p>
-
-          <div class="endpoint-badge">POST /alert</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Valor</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;TU_API_KEY&gt;</code></td>
-                <td>Tu token JWT recibido del bot.</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Requerido.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "alert": "Tu mensaje aquí"
-}</code></pre>
-
-          <h3>Ejemplo (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui.com/alert \
-  -H "Authorization: Bearer TU_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"alert": "¡Hola desde mi servidor!"}'</code></pre>
-        </section>
-
-          <div class="endpoint-badge">POST /alert</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token received from the bot.</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "alert": "Your message here"
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui.com/alert \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"alert": "Hello from my server!"}'</code></pre>
-        </section>
-
-        <section id="create-integration">
-          <h2>Crear Integración</h2>
-          <p>
-            Crea una nueva integración para un chat específico usando el token temporal. El scope es una cadena abierta
-            al criterio del usuario.
-          </p>
-
-          <div class="endpoint-badge">POST /createIntegration</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Valor</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;TOKEN_TEMPORAL&gt;</code></td>
-                <td>El token temporal recibido del comando /temporal_token.</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Requerido.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="endpoint-badge">POST /createIntegration</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;TEMPORAL_TOKEN&gt;</code></td>
-                <td>The temporal token received from the /temporal_token command.</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "chatId": 123456789,
-  "scope": "prod"
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui-alert.dev/createIntegration \
-  -H "Authorization: Bearer YOUR_TEMPORAL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"chatId": 123456789, "scope": "prod"}'</code></pre>
-        </section>
-
-        <section id="get-integration">
-          <h2>Obtener Integración</h2>
-          <p>Recupera detalles sobre una integración específica.</p>
-
-          <div
-            class="endpoint-badge"
-            style="color: #3b82f6; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3)"
-          >
-            GET /integrations/:chatId
-          </div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token (API Key).</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X GET https://api.pingui-alert.dev/integrations/123456789 \
-  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
-        </section>
-
-        <section id="update-rate-limit">
-          <h2>Actualizar Límite de Tasa</h2>
-          <p>Actualiza el límite de tasa para una integración específica.</p>
-
-          <div class="endpoint-badge">POST /updateRateLimit</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token (API Key).</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "chatId": 123456789,
-  "rateLimit": 50
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui-alert.dev/updateRateLimit \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"chatId": 123456789, "rateLimit": 50}'</code></pre>
-        </section>
-
-        <section id="revoke-integration">
-          <h2>Revocar Integración</h2>
-          <p>Revoca (desactiva) una integración.</p>
-
-          <div class="endpoint-badge">POST /revokeIntegration</div>
-
-          <h3>Headers</h3>
-          <table class="docs-table">
-            <thead>
-              <tr>
-                <th>Header</th>
-                <th>Value</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>Authorization</code></td>
-                <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
-                <td>Your JWT token (API Key).</td>
-              </tr>
-              <tr>
-                <td><code>Content-Type</code></td>
-                <td><code>application/json</code></td>
-                <td>Required.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h3>Body</h3>
-          <pre><code>{
-  "chatId": 123456789
-}</code></pre>
-
-          <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui-alert.dev/revokeIntegration \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"chatId": 123456789}'</code></pre>
-        </section>
-
-        <section id="npm-package">
-          <h2>Paquete NPM</h2>
-          <p>
-            Si usas Node.js o TypeScript, te recomendamos usar nuestro paquete oficial en caso de que solo quieras
-            enviar alertas usando el servidor Pingui Alert. El límite de tasa y la cuota son manejados por el servidor
-            y aún necesitas usar el endpoint createIntegration para obtener tu API KEY.
-          </p>
-
-          <h3>Instalación</h3>
-          <pre><code>npm install pingui-alert</code></pre>
-
-          <h3>Uso</h3>
-          <pre><code>import { Pingui } from 'pingui-alert';
-
-const client = new Pingui('TU_API_KEY');
-
-await client.send('¡Backup de base de datos completado con éxito! ✅');</code></pre>
-        </section>
-
+        <!-- Commandments -->
         <section id="commandments">
           <h2>Los Mandamientos</h2>
           <p>
-            Para mantener Pingui Alert útil y estable para todos, nos adherimos a un conjunto estricto de reglas. Sigue estos
-            mandamientos para asegurar la mejor experiencia.
+            Para mantener Pingui Alert útil y estable para todos, nos adherimos a un conjunto estricto de reglas. Sigue
+            estos mandamientos para asegurar la mejor experiencia.
           </p>
 
-          <div class="info-box" style="border-left-color: var(--accent-secondary); background: rgba(139, 92, 246, 0.1);">
-            <strong>📜 La Regla de Oro:</strong> Pingui Alert es para incidentes <em>accionables y críticos</em>. No es un servicio de logging.
+          <div class="info-box" style="border-left-color: var(--accent-secondary); background: rgba(139, 92, 246, 0.1)">
+            <strong>📜 La Regla de Oro:</strong> Pingui Alert es para incidentes <em>accionables y críticos</em>. No es
+            un servicio de logging.
           </div>
 
-          <ol class="steps-list" style="counter-reset: commandments;">
-            <li style="list-style: none; counter-increment: commandments;">
-              <strong style="font-size: 1.1em; color: var(--accent-primary);">I. Uso Crítico Solamente</strong><br/>
-              Solo lo usarás para alertas críticas que deban ser corregidas de inmediato. Diseña tu sistema para disparar estas alertas con moderación—solo una vez por tipo de incidente.
+          <ol class="steps-list" style="counter-reset: commandments">
+            <li style="list-style: none; counter-increment: commandments">
+              <strong style="font-size: 1.1em; color: var(--accent-primary)">I. Uso Crítico Solamente</strong><br />
+              Solo lo usarás para alertas críticas que deban ser corregidas de inmediato. Diseña tu sistema para
+              disparar estas alertas con moderación—solo una vez por tipo de incidente.
             </li>
-            <li style="list-style: none; counter-increment: commandments;">
-              <strong style="font-size: 1.1em; color: var(--accent-primary);">II. Estándares de Producción</strong><br/>
-              Si vas a enviar errores de tu api con nuestro bot, utiliza las mejores prácticas de producción. Asegúrate de que tu manejo de errores es robusto antes de enviarlo como alerta.
+            <li style="list-style: none; counter-increment: commandments">
+              <strong style="font-size: 1.1em; color: var(--accent-primary)">II. Estándares de Producción</strong><br />
+              Si vas a enviar errores de tu api con nuestro bot, utiliza las mejores prácticas de producción. Asegúrate
+              de que tu manejo de errores es robusto antes de enviarlo como alerta.
             </li>
-            <li style="list-style: none; counter-increment: commandments;">
-              <strong style="font-size: 1.1em; color: var(--accent-primary);">III. Self-Host para Customización</strong><br/>
-              Si requieres <em>alguna</em> customización (por simple que sea), utiliza la opción de self hosted. Puedes hostear Pingui Alert en cualquier lugar; sugerimos un VPS o servidor local por los pocos recursos que consume.
+            <li style="list-style: none; counter-increment: commandments">
+              <strong style="font-size: 1.1em; color: var(--accent-primary)">III. Self-Host para Customización</strong
+              ><br />
+              Si requieres <em>alguna</em> customización (por simple que sea), utiliza la opción de self hosted. Puedes
+              hostear Pingui Alert en cualquier lugar; sugerimos un VPS o servidor local por los pocos recursos que
+              consume.
             </li>
-            <li style="list-style: none; counter-increment: commandments;">
-              <strong style="font-size: 1.1em; color: var(--accent-primary);">IV. Alertas Accionables</strong><br/>
+            <li style="list-style: none; counter-increment: commandments">
+              <strong style="font-size: 1.1em; color: var(--accent-primary)">IV. Alertas Accionables</strong><br />
               Asegurarás que cada alerta sea accionable. Cada alerta debe incitar una respuesta específica e inmediata.
             </li>
-            <li style="list-style: none; counter-increment: commandments;">
-              <strong style="font-size: 1.1em; color: var(--accent-primary);">V. Sin Fugas de Datos</strong><br/>
-              No enviarás datos sensibles de usuarios (PII), identificadores o secretos en tus alertas. Mantén los mensajes seguros.
+            <li style="list-style: none; counter-increment: commandments">
+              <strong style="font-size: 1.1em; color: var(--accent-primary)">V. Sin Fugas de Datos</strong><br />
+              No enviarás datos sensibles de usuarios (PII), identificadores o secretos en tus alertas. Mantén los
+              mensajes seguros.
             </li>
-            <li style="list-style: none; counter-increment: commandments;">
-              <strong style="font-size: 1.1em; color: var(--accent-primary);">VI. Fallar de Forma Segura</strong><br/>
-              Implementarás manejo de errores para que una notificación de alerta fallida nunca bloquee tu aplicación principal. El fallo del servicio de alertas debe ser silencioso para tus usuarios finales.
+            <li style="list-style: none; counter-increment: commandments">
+              <strong style="font-size: 1.1em; color: var(--accent-primary)">VI. Fallar de Forma Segura</strong><br />
+              Implementarás manejo de errores para que una notificación de alerta fallida nunca bloquee tu aplicación
+              principal. El fallo del servicio de alertas debe ser silencioso para tus usuarios finales.
             </li>
           </ol>
         </section>
 
+        <!-- Production usage -->
         <section id="production-usage">
           <h2>Uso en Producción</h2>
           <p>
@@ -419,8 +156,8 @@ await client.send('¡Backup de base de datos completado con éxito! ✅');</code
 
           <div class="info-box" style="background: rgba(251, 146, 60, 0.1); border-left-color: #fb923c">
             <strong>⚠️ Importante:</strong> Si usas la instancia hosteada de <strong>@PinguiAlertBot</strong> en
-            producción, por favor resérvala <strong>exclusivamente para alertas críticas</strong> (ej: fallos de sistema,
-            incidentes de seguridad, errores críticos). Esto ayuda a mantener la disponibilidad del servicio.
+            producción, por favor resérvala <strong>exclusivamente para alertas críticas</strong> (ej: fallos de
+            sistema, incidentes de seguridad, errores críticos). Esto ayuda a mantener la disponibilidad del servicio.
           </div>
 
           <h3>Configuración Recomendada</h3>
@@ -428,16 +165,16 @@ await client.send('¡Backup de base de datos completado con éxito! ✅');</code
 
           <ul class="steps-list">
             <li>
-              <strong>Hostea tu propia Instancia:</strong> Despliega tu propio servidor y bot de Pingui Alert. Esto te da
-              control total sobre los límites de tasa y recursos dedicados.
+              <strong>Hostea tu propia Instancia:</strong> Despliega tu propio servidor y bot de Pingui Alert. Esto te
+              da control total sobre los límites de tasa y recursos dedicados.
             </li>
             <li>
               <strong>Solo Alertas Críticas:</strong> Si usas @PinguiAlertBot, implementa lógica de filtrado para enviar
               solo notificaciones de alta prioridad.
             </li>
             <li>
-              <strong>Implementa Batching:</strong> Agrupa múltiples alertas no críticas en mensajes de resumen periódicos
-              en lugar de enviar notificaciones individuales.
+              <strong>Implementa Batching:</strong> Agrupa múltiples alertas no críticas en mensajes de resumen
+              periódicos en lugar de enviar notificaciones individuales.
             </li>
           </ul>
 
@@ -458,14 +195,302 @@ pnpm install
 pnpm run dev</code></pre>
         </section>
 
+        <h2>Referencia API</h2>
+        <p>Aquí encontrarás toda la información que necesitas para integrar Pingui Alert en tus proyectos.</p>
+
+        <!-- Send Alert -->
+        <details>
+          <summary id="send-alert">
+            <h2>Enviar una Alerta</h2>
+            <p>Envía una petición POST al endpoint <code>/alert</code> para entregar un mensaje.</p>
+          </summary>
+          <section id="send-alert">
+            <h2>Enviar una Alerta</h2>
+            <p>Envía una petición POST al endpoint <code>/alert</code> para entregar un mensaje.</p>
+
+            <div class="endpoint-badge">POST /alert</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;TU_API_KEY&gt;</code></td>
+                  <td>Tu token JWT recibido del endpoint <code>/createIntegration</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Requerido.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+    "title": "Título de la alerta",
+    "message": "Tu mensaje aquí",
+    "chatId": "ID del chat de telegram a donde quieres recibir la alerta"
+  }</code></pre>
+
+            <h3>Ejemplo (cURL)</h3>
+            <pre><code>curl -X POST https://api.pingui.com/alert \
+    -H "Authorization: Bearer TU_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"title": "Título de la alerta", "message": "Tu mensaje aquí", "chatId": "ID del chat de telegram en donde quieres recibir la alerta"}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Create Integration -->
+        <details>
+          <summary id="create-integration">
+            <h2>Crear Integración</h2>
+            <p>
+              Crea una nueva integración para un chat específico usando el token temporal. El scope es una cadena
+              abierta al criterio del usuario.
+            </p>
+          </summary>
+          <section id="create-integration">
+            <h2>Crear Integración</h2>
+            <p>
+              Crea una nueva integración para un chat específico usando el token temporal. El scope es una cadena
+              abierta al criterio del usuario.
+            </p>
+
+            <div class="endpoint-badge">POST /createIntegration</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;TOKEN_TEMPORAL&gt;</code></td>
+                  <td>El token temporal recibido del comando /temporal_token.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Requerido.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="endpoint-badge">POST /createIntegration</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;TEMPORAL_TOKEN&gt;</code></td>
+                  <td>The temporal token received from the /temporal_token command.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Required.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+    "chatId": 123456789,
+    "scope": "prod"
+  }</code></pre>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://api.pingui-alert.dev/createIntegration \
+    -H "Authorization: Bearer YOUR_TEMPORAL_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"chatId": 123456789, "scope": "prod"}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Get Integration -->
+        <details>
+          <summary id="get-integration">
+            <h2>Obtener Integración</h2>
+            <p>Recupera detalles sobre una integración específica.</p>
+          </summary>
+          <section>
+            <h2>Obtener Integración</h2>
+            <p>Recupera detalles sobre una integración específica.</p>
+
+            <div
+              class="endpoint-badge"
+              style="color: #3b82f6; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3)"
+            >
+              GET /integrations/:chatId
+            </div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Tu token permanente.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X GET https://api.pingui-alert.dev/integrations/123456789 \
+    -H "Authorization: Bearer TU_TOKEN"</code></pre>
+          </section>
+        </details>
+
+        <!-- Update rate limit -->
+        <details>
+          <summary id="update-rate-limit">
+            <h2>Actualizar Límite de alertas</h2>
+            <p>Actualiza la cantidad del límite de alertas (en el bot público no pueden ser más de 10)</p>
+          </summary>
+          <section>
+            <h2>Actualizar Límite de Tasa</h2>
+            <p>Actualiza el límite de tasa para una integración específica.</p>
+
+            <div class="endpoint-badge">POST /updateRateLimit</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Tu token permanente.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Requerido.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+    "chatId": 123456789,
+    "rateLimit": 50
+  }</code></pre>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://api.pingui-alert.dev/updateRateLimit \
+    -H "Authorization: Bearer YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"chatId": 123456789, "rateLimit": 50}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Revoke integration -->
+        <details>
+          <summary>
+            <h2>Revocar Integración</h2>
+            <p>Revoca (desactiva) una integración.</p>
+          </summary>
+          <section id="revoke-integration">
+            <div class="endpoint-badge">POST /revokeIntegration</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Tu token permanente.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Requerido.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+    "chatId": 123456789
+  }</code></pre>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://api.pingui-alert.dev/revokeIntegration \
+    -H "Authorization: Bearer YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"chatId": 123456789}'</code></pre>
+          </section>
+        </details>
+
+        <!-- NPM package -->
+        <section id="npm-package">
+          <h2>Paquete NPM</h2>
+          <p>
+            Si usas Node.js o TypeScript, te recomendamos usar nuestro paquete oficial en caso de que solo quieras
+            enviar alertas usando el servidor Pingui Alert. El límite de tasa y la cuota son manejados por el servidor y
+            aún necesitas usar el endpoint createIntegration para obtener tu API KEY.
+          </p>
+
+          <h3>Instalación</h3>
+          <pre><code>npm install pingui-alert</code></pre>
+
+          <h3>Uso</h3>
+          <pre><code>import { Pingui } from 'pingui-alert';
+
+const client = new Pingui('TU_API_KEY');
+
+await client.send('¡Backup de base de datos completado con éxito! ✅');</code></pre>
+        </section>
+
         <section id="use-cases">
           <h2>Casos de Uso</h2>
           <p>
-            Aquí tienes algunos ejemplos claros de cómo aplicar Pingui Alert en escenarios reales, cumpliendo estrictamente
-            con los <strong>Mandamientos</strong>.
+            Aquí tienes algunos ejemplos claros de cómo aplicar Pingui Alert en escenarios reales, cumpliendo
+            estrictamente con los <strong>Mandamientos</strong>.
           </p>
 
-          <div class="use-case-card" style="margin-bottom: 2rem;">
+          <div class="use-case-card" style="margin-bottom: 2rem">
             <h3>1. Monitoreo de Errores Críticos (Pasarela de Pago)</h3>
             <p>
               <strong>Escenario:</strong> El pago de un usuario falla debido a un error 500 del servidor. <br />
@@ -498,7 +523,7 @@ pnpm run dev</code></pre>
             </div>
           </div>
 
-          <div class="use-case-card" style="margin-bottom: 2rem;">
+          <div class="use-case-card" style="margin-bottom: 2rem">
             <h3>2. Monitoreo de Recursos del Sistema</h3>
             <p>
               <strong>Escenario:</strong> El espacio en disco del servidor está peligrosamente bajo. <br />
@@ -528,10 +553,11 @@ fi</code></pre>
             </div>
           </div>
 
-          <div class="use-case-card" style="margin-bottom: 2rem;">
+          <div class="use-case-card" style="margin-bottom: 2rem">
             <h3>3. Incidentes de Seguridad</h3>
             <p>
-              <strong>Escenario:</strong> Múltiples intentos de login fallidos detectados desde una misma IP (Brute Force). <br />
+              <strong>Escenario:</strong> Múltiples intentos de login fallidos detectados desde una misma IP (Brute
+              Force). <br />
               <strong>Mandamientos Aplicados:</strong> I (Crítico), V (Sin PII).
             </p>
             <div class="code-window">
