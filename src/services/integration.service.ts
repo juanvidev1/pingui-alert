@@ -62,7 +62,7 @@ export class IntegrationService {
         { expiresIn: '5m' }
       );
 
-      const integration = await this.getIntegration(chatId);
+      const integration = await Integration.findOne({ where: { chatId } });
 
       if (!integration) {
         throw new Error('Integration not found');
@@ -118,7 +118,6 @@ export class IntegrationService {
 
   static async getIntegration(chatId: number) {
     try {
-      console.log('On getIntegration', chatId);
       const integration = await Integration.findOne({ where: { chatId } });
 
       return integration?.dataValues;
@@ -139,6 +138,7 @@ export class IntegrationService {
         throw new Error('Rate limit cannot be greater than 10 on public bot');
       }
 
+      console.log('rateLimit', rateLimit);
       await integration.update({
         rateLimit: rateLimit || integration.dataValues.rateLimit - 1,
         updatedAt: new Date()
