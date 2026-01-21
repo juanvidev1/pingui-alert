@@ -2,6 +2,8 @@
 
 Pingui Alert is a lightweight notification service that allows you to send alerts to your Telegram account directly from your code. It's designed to be simple to use with zero configuration required on the client side.
 
+![Pingui Alert](./src/public/images/mainImgWbg.png)
+
 ## Prerequisites
 
 - **Node.js**: v20 or higher recommended.
