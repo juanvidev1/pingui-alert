@@ -5,3 +5,6 @@ calls.http
 *.http
 PASOS_NPM.md
 ESTADO_DEL_PROYECTO.md
+BRANDING.md
+logs/
+dist/
