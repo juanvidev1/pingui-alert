@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
-import { verifyJwtToken, validateRateLimit, validateStatus, verifyTemporalToken } from '../middlewares/index.js';
 import { serveStatic } from '@hono/node-server/serve-static';
-import { WebController, ApiController } from './controllers/index.js';
+import { WebController } from './controllers/index.js';
 import apiRouter from './routes/index.js';
 
 const app = new Hono();
