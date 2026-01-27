@@ -31,7 +31,7 @@ bot.command('start', async (ctx) => {
 });
 
 bot.command('help', async (ctx) => {
-  await ctx.reply('Help message');
+  await ctx.reply('You can see the documentation at https://pingui-alert.dev/docs');
 });
 
 bot.command('temporal_token', async (ctx) => {
