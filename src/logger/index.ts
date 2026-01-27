@@ -40,4 +40,10 @@ export class Logger {
     const logFile = path.join(logPath, `debug.log`);
     fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
   }
+
+  public static jobsLog(log: Log) {
+    const date = new Date().toISOString();
+    const logFile = path.join(logPath, `jobs.log`);
+    fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
+  }
 }
