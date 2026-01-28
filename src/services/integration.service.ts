@@ -138,7 +138,6 @@ export class IntegrationService {
         throw new Error('Rate limit cannot be greater than 10 on public bot');
       }
 
-      console.log('rateLimit', rateLimit);
       await integration.update({
         rateLimit: rateLimit || integration.dataValues.rateLimit - 1,
         updatedAt: new Date()

@@ -38,6 +38,4 @@ const Integration = sequelize.define('Integration', {
   }
 });
 
-Integration.sync({ alter: true });
-
 export { Integration };
