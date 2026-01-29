@@ -16,7 +16,7 @@ export function initializeJobs() {
   });
 
   // Schedule the backupDbJob to run every day at 3 AM. Creates a backup of the database. For MVP it's a simple file copy. Possile to escalate in the future to more complex solutions.
-  cron.schedule('15 23 * * *', async () => {
+  cron.schedule('0 3 * * *', async () => {
     try {
       await backupDbJob();
       Logger.jobsLog({ chatId: 0, message: '[JOB] backupDbJob executed successfully.' });
