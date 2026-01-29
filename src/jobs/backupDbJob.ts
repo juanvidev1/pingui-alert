@@ -5,8 +5,8 @@ import config from '../config/index.js';
 
 export async function backupDbJob() {
   try {
-    const dbPath = path.join(config.dbStoragePath || './storage/pingui.db');
-    const backupPath = path.join(config.backupRoute || './backups/pingui/');
+    const dbPath = path.join(process.cwd(), config.dbStoragePath || './storage/pingui.db');
+    const backupPath = path.join(process.cwd(), config.backupRoute || './backups/pingui/');
 
     if (!fs.existsSync(backupPath)) {
       fs.mkdirSync(backupPath, { recursive: true });

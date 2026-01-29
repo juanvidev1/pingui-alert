@@ -6,3 +6,4 @@ calls.http
 BRANDING.md
 logs/
 dist/
+tmp/
