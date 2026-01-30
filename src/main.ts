@@ -5,6 +5,7 @@ import { initDB } from './db/init.js';
 import { startQueueWorker } from './services/queue.service.js';
 import { initializeJobs } from './jobs/index.js';
 
+console.log('Starting application...');
 initDB();
 
 startQueueWorker();

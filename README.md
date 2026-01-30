@@ -4,6 +4,57 @@ Pingui Alert is a lightweight notification service that allows you to send alert
 
 ![Pingui Alert](./src/public/images/mainImgWbg.png)
 
+## System Architecture
+
+Pingui Alert uses a queue-based architecture to ensure reliable alert delivery:
+
+- **REST API**: Receives alerts and enqueues them
+- **Redis Queue**: Stores pending alerts for delivery
+- **Queue Worker**: Processes alerts and sends them to Telegram
+- **Scheduled Jobs**: Automatic maintenance tasks
+- **Telegram Bot**: Interface for managing integrations
+
+## Internal Operation
+
+### Queue System
+
+Pingui Alert uses **Redis** as a queue system to handle alerts asynchronously:
+
+```
+API Request → Validation → Redis Queue → Worker → Telegram
+```
+
+**Queue Characteristics:**
+- **Maximum capacity**: 500 pending alerts
+- **Send rate**: 1 message per second (Telegram safe limit)
+- **Persistence**: Alerts are stored in Redis until processed
+- **Distributed lock**: Prevents duplicate processing
+
+### Automatic Jobs
+
+The system executes scheduled tasks using **node-cron**:
+
+#### 1. Rate Limit Reset (00:00 daily)
+```typescript
+// Resets daily alert counter to 10 for all users
+cron.schedule('0 0 * * *', resetRateLimitJob);
+```
+
+#### 2. Database Backup (03:00 daily)
+```typescript
+// Creates a backup copy of the SQLite database
+cron.schedule('0 3 * * *', backupDbJob);
+```
+
+### Alert Flow
+
+1. **Reception**: API receives POST `/api/alert`
+2. **Validation**: Verifies JWT, rate limits and integration status
+3. **Enqueuing**: Alert is saved in Redis with unique ID
+4. **Processing**: Worker takes alert from queue
+5. **Sending**: Sent to Telegram with rate limiting
+6. **Logging**: Result is logged
+
 ## Prerequisites
 
 - **Node.js**: v20 or higher recommended.
@@ -81,6 +132,56 @@ pnpm run start
 ## Database
 
 The project uses SQLite by default. Ensure the `./storage` directory exists or is created by the application/ORM.
+
+## Monitoring and Logs
+
+Pingui Alert generates detailed logs for monitoring:
+
+- **`logs/info.log`**: General events and processed alerts
+- **`logs/error.log`**: Application errors and send failures
+- **`logs/jobs.log`**: Scheduled job execution
+
+### Useful Monitoring Commands
+
+```bash
+# View alerts in real time
+tail -f logs/info.log | grep "Sending alert"
+
+# Monitor errors
+tail -f logs/error.log
+
+# View job status
+tail -f logs/jobs.log
+
+# Check Redis queue size
+redis-cli LLEN pingui:queue:alerts
+```
+
+## Production Configuration
+
+### Additional Environment Variables
+
+```env
+# Queue and Workers
+REDIS_URL=redis://localhost:6379
+MAX_QUEUE_SIZE=500
+SEND_DELAY_MS=1000
+
+# Backups
+BACKUP_ROUTE=./backups/pingui/
+
+# Logs
+LOG_LEVEL=info
+```
+
+### Scalability
+
+To handle higher volume:
+
+1. **Multiple Workers**: Run multiple worker instances
+2. **Redis Cluster**: For high availability of the queue
+3. **Load Balancer**: Distribute requests across multiple APIs
+4. **Monitoring**: Use tools like Prometheus + Grafana
 
 ## The Commandments
 

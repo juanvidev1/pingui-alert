@@ -4,6 +4,7 @@ import { resetRateLimitJob } from './resetRateLimit.job.js';
 import { backupDbJob } from './backupDbJob.js';
 
 export function initializeJobs() {
+  console.log('Initializing scheduled jobs...');
   // Schedule the resetRateLimitJob to run every day at midnight. Sets rate limits back to 10 for all integrations, doesn't matter if they have messages left or not.
   cron.schedule('0 0 * * *', async () => {
     try {
