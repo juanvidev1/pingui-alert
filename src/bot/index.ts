@@ -1,6 +1,7 @@
 import { Bot } from 'grammy';
 import config from '../config/index.js';
 import { IntegrationService } from '../services/integration.service.js';
+import { MetricsService } from '../services/metrics.service.js';
 
 const bot = new Bot(config.botToken || '');
 const maxAlerts = config.maxAlerts || 10;
@@ -43,6 +44,7 @@ bot.command('temporal_token', async (ctx) => {
     await ctx.reply(`This is your temporal token, it will expire in 5 minutes: ${tempTokenData}`);
   } catch (error) {
     console.error(error);
+    await MetricsService.incrementErrorsCount();
     await ctx.reply('Error creating temporal token');
   }
 });
@@ -54,6 +56,7 @@ bot.command('get_me', async (ctx) => {
     await ctx.reply(`Your user id is: ${chatId}`);
   } catch (error) {
     console.error(error);
+    await MetricsService.incrementErrorsCount();
     await ctx.reply('Error getting user id');
   }
 });

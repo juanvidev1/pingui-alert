@@ -2,6 +2,7 @@ import type { Context } from 'hono';
 import { generateUniqueId } from '../../utils/index.js';
 import { Logger } from '../../logger/index.js';
 import { IntegrationService } from '../../services/integration.service.js';
+import { MetricsService } from '../../services/metrics.service.js';
 import bot from '../../bot/index.js';
 import { enqueueAlert } from '../../services/queue.service.js';
 import { hashChatId } from '../../utils/index.js';
@@ -51,6 +52,8 @@ export class ApiController {
       title: data.title || 'Alert',
       message: data.message
     });
+
+    await MetricsService.incrementSentAlertsCount();
 
     return c.json({ message: 'Alert enqueued' });
   }

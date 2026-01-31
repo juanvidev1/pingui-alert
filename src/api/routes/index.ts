@@ -1,8 +1,10 @@
 import { Hono } from 'hono';
-import { ApiController } from '../controllers/index.js';
+import { ApiController, MetricsController } from '../controllers/index.js';
 import { verifyJwtToken, validateRateLimit, validateStatus, verifyTemporalToken } from '../../middlewares/index.js';
 
 const apiRouter = new Hono().basePath('/api');
+
+apiRouter.get('/metrics', MetricsController.getMetrics);
 
 apiRouter.post('/temporal-token', ApiController.createTemporalToken);
 
