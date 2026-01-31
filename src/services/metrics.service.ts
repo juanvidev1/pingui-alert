@@ -1,5 +1,5 @@
-import { Metrics } from '../db/models';
-import { Logger } from '../logger';
+import { Metrics } from '../db/models.js';
+import { Logger } from '../logger/index.js';
 
 export class MetricsService {
   static async createDailyMetricsRecord() {
