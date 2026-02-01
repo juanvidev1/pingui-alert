@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import { Logger } from '../logger/index.js';
 import { resetRateLimitJob } from './resetRateLimit.job.js';
 import { backupDbJob } from './backupDbJob.js';
+import { MetricsService } from '../services/metrics.service.js';
 
 export function initializeJobs() {
   console.log('Initializing scheduled jobs...');
@@ -24,6 +25,17 @@ export function initializeJobs() {
     } catch (err) {
       console.error('[JOB ERROR]', err);
       Logger.errorLog({ chatId: 0, message: `[JOB ERROR] backupDbJob failed: ${err}` });
+    }
+  });
+
+  // Schedule the creation of new row on Metrics table every day at midnight
+  cron.schedule('0 0 * * *', async () => {
+    try {
+      await MetricsService.createDailyMetricsRecord();
+      Logger.jobsLog({ chatId: 0, message: '[JOB] createMetricsRowJob executed successfully.' });
+    } catch (err) {
+      console.error('[JOB ERROR]', err);
+      Logger.errorLog({ chatId: 0, message: `[JOB ERROR] createMetricsRowJob failed: ${err}` });
     }
   });
 
