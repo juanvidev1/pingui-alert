@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pingui Alert - Simple Alerts for Developers main page in english" />
+    <meta name="keywords" content="Pingui Alert, Alerts, Developers, Simple Alerts, Pingui Alert Documentation" />
+    <link rel="shortcut icon" href="./public/images/pinguiAlert-icon.png" type="image/x-icon" />
+    <title>System Metrics - Pingui Alert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" src="./public/js/main.js"></script>
+    <link rel="stylesheet" href="./public/css/styles.css" />
+  </head>
+  <body>
+    <!-- Background Glow -->
+    <div class="background-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo">
+        <img src="./public/images/PinguiAlert1.png" alt="Pingui Alert" style="width: 30%" />
+        <a href="/" style="text-decoration: none; color: inherit; margin-left: 0.5rem">Pingui Alert</a>
+        <span class="badge">Beta</span>
+      </div>
+      <div class="nav-links">
+        <a href="/docs" class="nav-link">Documentation</a>
+        <a href="https://github.com/juanvidev1/pingui-alert" target="_blank" class="nav-link">GitHub</a>
+        <a href="/es" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
+          <span style="font-size: 1.1em">🇪🇸</span> ES
+        </a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <!-- Hero Section -->
+      <section class="hero" style="text-align: center; padding: 4rem 0 2rem">
+        <h1 class="fade-in-down">System <span class="gradient-text">Metrics</span></h1>
+        <p class="subtitle fade-in-up" style="animation-delay: 0.1s">
+          Real-time usage statistics and system health indicators
+        </p>
+
+        <!-- Date Selector -->
+        <div class="fade-in-up" style="animation-delay: 0.2s; margin-top: 2rem">
+          <label for="date-selector" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary)"
+            >Select Date:</label
+          >
+          <input
+            type="date"
+            id="date-selector"
+            class="date-input"
+            style="
+              padding: 0.75rem 1rem;
+              border: 1px solid var(--border-color);
+              border-radius: 8px;
+              background: var(--bg-secondary);
+              color: var(--text-primary);
+              font-family: inherit;
+            "
+          />
+        </div>
+      </section>
+
+      <!-- Metrics Grid -->
+      <section class="features" style="padding-top: 2rem">
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/pinguiAlert-icon.png" alt="Integrations" style="width: 37%; height: auto" />
+          </div>
+          <h3>Total Integrations</h3>
+          <p
+            id="totalGlobalIntegrations"
+            style="font-size: 2rem; font-weight: 700; color: var(--accent-primary); margin: 0.5rem 0"
+          >
+            3,456
+          </p>
+          <p id="totalDayIntegrations" style="font-size: 0.9rem; color: var(--text-secondary)">
+            Today: +23 new integrations
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/bell-icon.png" alt="Alerts" style="width: 29%; height: auto" />
+          </div>
+          <h3>Alerts Sent</h3>
+          <p
+            id="totalGlobalAlerts"
+            style="font-size: 2rem; font-weight: 700; color: var(--accent-primary); margin: 0.5rem 0"
+          >
+            78,910
+          </p>
+          <p id="totalDayAlerts" style="font-size: 0.9rem; color: var(--text-secondary)">Today: 1,234 alerts sent</p>
+        </div>
+
+        <div class="feature-card">
+          <div>
+            <img src="./public/images/warn-icon.png" alt="Errors" style="width: 29%; height: auto" />
+          </div>
+          <h3>System Errors</h3>
+          <p
+            id="totalGlobalErrors"
+            style="font-size: 2rem; font-weight: 700; color: var(--accent-secondary); margin: 0.5rem 0"
+          >
+            100
+          </p>
+          <p id="totalDayErrors" style="font-size: 0.9rem; color: var(--text-secondary)">Today: 5 failed attempts</p>
+        </div>
+      </section>
+
+      <!-- System Status -->
+      <section style="padding: 4rem 0; text-align: center">
+        <div class="card" style="max-width: 600px; margin: 0 auto; padding: 2rem">
+          <h2 style="margin-bottom: 1rem">System Status</h2>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem">
+            <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%"></div>
+            <span style="color: #10b981; font-weight: 600">All Systems Operational</span>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem">
+            Last updated: <span id="last-updated">Loading...</span>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container" style="min-height: auto">
+        <p>&copy; 2025 Pingui Alert. Built with ❤️ for devs.</p>
+        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: center">
+          <a href="/docs">Docs</a>
+          <a href="https://github.com/juanvidev1/pingui-alert">GitHub</a>
+          <a href="#">Status</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Update timestamp
+      document.getElementById('last-updated').textContent = new Date().toLocaleString();
+    </script>
+  </body>
+</html>

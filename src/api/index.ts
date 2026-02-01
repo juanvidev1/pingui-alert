@@ -18,6 +18,8 @@ app.get('/es', WebController.esHome);
 
 app.get('/docs/es', WebController.esDocs);
 
+app.get('/metrics', WebController.metrics);
+
 app.route('/', apiRouter);
 
 export default app;

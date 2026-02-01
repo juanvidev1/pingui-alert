@@ -42,4 +42,14 @@ export class WebController {
       'Content-Type': 'text/html'
     });
   }
+
+  static async metrics(c: Context) {
+    const publicDir = path.join(process.cwd(), 'src', 'public');
+    const indexPath = path.join(publicDir, 'metrics.html');
+    const htmlContent = readFileSync(indexPath, 'utf-8');
+
+    return c.html(htmlContent, 200, {
+      'Content-Type': 'text/html'
+    });
+  }
 }

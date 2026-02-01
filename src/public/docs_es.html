@@ -37,7 +37,16 @@
             <h3>Primeros Pasos</h3>
           </summary>
           <a href="#introduction" class="sidebar-link">Introducción</a>
+          <a href="#architecture" class="sidebar-link">Arquitectura del Sistema</a>
           <a href="#setup" class="sidebar-link">Configuración y Auth</a>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Open Source</h3>
+          </summary>
+          <a href="#self-hosting" class="sidebar-link">Self-Hosting</a>
+          <a href="#monitoring" class="sidebar-link">Monitoreo y Logs</a>
+          <a href="#metrics" class="sidebar-link">Métricas del Sistema</a>
         </details>
         <details class="sidebar-group">
           <summary>
@@ -79,6 +88,39 @@
             directamente desde tu código. Está diseñado para ser extremadamente simple de usar, sin requerir
             configuración en tu servidor.
           </p>
+        </section>
+
+        <!-- Arquitectura del Sistema -->
+        <section id="architecture">
+          <h2>Arquitectura del Sistema</h2>
+          <p>Pingui Alert utiliza una arquitectura basada en colas para garantizar la entrega confiable de alertas:</p>
+
+          <div class="info-box" style="background: rgba(59, 130, 246, 0.1); border-left-color: #3b82f6">
+            <strong>🏗️ Flujo de Arquitectura:</strong><br />
+            API Request → Validación → Cola Redis → Worker → Telegram
+          </div>
+
+          <h3>Componentes Principales</h3>
+          <ul class="steps-list">
+            <li><strong>API REST:</strong> Recibe las alertas y las encola</li>
+            <li><strong>Cola Redis:</strong> Almacena alertas pendientes (máx 500 alertas)</li>
+            <li><strong>Worker de Cola:</strong> Procesa alertas a 1 msg/segundo (límite seguro de Telegram)</li>
+            <li><strong>Jobs Programados:</strong> Tareas automáticas de mantenimiento</li>
+            <li><strong>Bot de Telegram:</strong> Interfaz para gestionar integraciones</li>
+          </ul>
+
+          <h3>Jobs Automáticos</h3>
+          <p>El sistema ejecuta tareas de mantenimiento programadas:</p>
+          <ul>
+            <li>
+              <strong>Reset de Rate Limits (00:00 diario):</strong> Reinicia el contador de alertas diarias a 10 para
+              todos los usuarios
+            </li>
+            <li>
+              <strong>Backup de Base de Datos (03:00 diario):</strong> Crea backups automáticos de la base de datos
+              SQLite
+            </li>
+          </ul>
         </section>
 
         <section id="setup">
@@ -149,7 +191,113 @@
           </ol>
         </section>
 
-        <!-- Production usage -->
+        <!-- Self-Hosting -->
+        <section id="self-hosting">
+          <h2>Self-Hosting</h2>
+          <p>
+            Pingui Alert es completamente open source y puede ser auto-hosteado para control total sobre tu
+            infraestructura de alertas.
+          </p>
+
+          <h3>Prerequisitos</h3>
+          <ul class="steps-list">
+            <li><strong>Node.js:</strong> v20 o superior</li>
+            <li><strong>pnpm:</strong> v9 o superior</li>
+            <li><strong>Redis:</strong> Para el sistema de colas (local o hosteado)</li>
+            <li><strong>Token de Bot de Telegram:</strong> Crear vía @BotFather</li>
+          </ul>
+
+          <h3>Configuración Rápida</h3>
+          <pre><code>git clone https://github.com/juanvidev1/pingui-alert
+cd pingui-alert
+pnpm install
+
+# Configurar entorno
+cp .env.example .env
+# Editar .env con tus valores
+
+# Ejecutar en desarrollo
+pnpm run dev
+
+# O compilar para producción
+pnpm run build
+pnpm run start</code></pre>
+
+          <h3>Variables de Entorno</h3>
+          <pre><code># Requeridas
+BOT_TOKEN=tu_token_de_telegram
+JWT_SECRET=tu_jwt_secreto
+REDIS_URL=redis://localhost:6379
+
+# Opcionales
+MAX_ALERTS=100  # Personalizar límite diario
+MAX_QUEUE_SIZE=500
+SEND_DELAY_MS=1000</code></pre>
+        </section>
+
+        <!-- Monitoreo -->
+        <section id="monitoring">
+          <h2>Monitoreo y Logs</h2>
+          <p>Pingui Alert proporciona capacidades completas de logging y monitoreo:</p>
+
+          <h3>Archivos de Log</h3>
+          <ul class="steps-list">
+            <li><strong>logs/info.log:</strong> Eventos generales y alertas procesadas</li>
+            <li><strong>logs/error.log:</strong> Errores de aplicación y fallos de envío</li>
+            <li><strong>logs/jobs.log:</strong> Ejecución de jobs programados</li>
+          </ul>
+
+          <h3>Comandos de Monitoreo</h3>
+          <pre><code># Ver alertas en tiempo real
+tail -f logs/info.log | grep "Sending alert"
+
+# Monitorear errores
+tail -f logs/error.log
+
+# Verificar estado de jobs
+tail -f logs/jobs.log
+
+# Tamaño de cola Redis
+redis-cli LLEN pingui:queue:alerts</code></pre>
+        </section>
+
+        <!-- Métricas -->
+        <section id="metrics">
+          <h2>Métricas del Sistema</h2>
+          <p>Rastrea el uso del sistema y rendimiento con métricas integradas:</p>
+
+          <div
+            class="endpoint-badge"
+            style="color: #10b981; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3)"
+          >
+            GET /api/metrics
+          </div>
+
+          <h3>Métricas Disponibles</h3>
+          <ul class="steps-list">
+            <li><strong>Total de Integraciones:</strong> Número de integraciones registradas</li>
+            <li><strong>Total de Alertas Enviadas:</strong> Alertas entregadas acumulativas</li>
+            <li><strong>Total de Errores:</strong> Intentos de alerta fallidos</li>
+            <li><strong>Última Actualización:</strong> Timestamp de frescura de métricas</li>
+          </ul>
+
+          <h3>Respuesta de Ejemplo</h3>
+          <pre><code>{
+  "totalIntegrations": 1234,
+  "totalSentAlerts": 45678,
+  "totalErrors": 23,
+  "metrics": [
+    {
+      "totalIntegrations": 1234,
+      "totalSentAlerts": 45678,
+      "totalErrors": 23,
+      "updatedAt": "2025-01-01T12:00:00Z"
+    }
+  ]
+}</code></pre>
+        </section>
+
+        <!-- Uso en Producción -->
         <section id="production-usage">
           <h2>Uso en Producción</h2>
           <p>
@@ -163,7 +311,7 @@
             sistema, incidentes de seguridad, errores críticos). Esto ayuda a mantener la disponibilidad del servicio.
           </div>
 
-          <h3>Configuración Recomendada</h3>
+          <h3>Configuración Recomendada para Producción</h3>
           <p>Para cargas de trabajo en producción con notificaciones frecuentes, recomendamos uno de estos enfoques:</p>
 
           <ul class="steps-list">
@@ -180,22 +328,6 @@
               periódicos en lugar de enviar notificaciones individuales.
             </li>
           </ul>
-
-          <h3>Self-Hosting</h3>
-          <p>Para hostear Pingui Alert:</p>
-          <pre><code>git clone https://github.com/juanvidev1/pingui-alert
-cd pingui-alert
-
-# Configura tus variables de entorno
-export BOT_TOKEN="tu_token_de_telegram"
-export JWT_SECRET="tu_clave_secreta"
-export MAX_ALERTS=100  # Personaliza tu límite diario
-
-# Instala dependencias
-pnpm install
-
-# Corre el servidor
-pnpm run dev</code></pre>
         </section>
 
         <h2>Referencia API</h2>
@@ -244,7 +376,7 @@ pnpm run dev</code></pre>
   }</code></pre>
 
             <h3>Ejemplo (cURL)</h3>
-            <pre><code>curl -X POST https://api.pingui.com/alert \
+            <pre><code>curl -X POST https://pingui-alert.dev/api/alert \
     -H "Authorization: Bearer TU_TOKEN" \
     -H "Content-Type: application/json" \
     -d '{"title": "Título de la alerta", "message": "Tu mensaje aquí", "chatId": "ID del chat de telegram en donde quieres recibir la alerta"}'</code></pre>
@@ -324,7 +456,7 @@ pnpm run dev</code></pre>
   }</code></pre>
 
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X POST https://api.pingui-alert.dev/createIntegration \
+            <pre><code>curl -X POST https://pingui-alert.dev/api/createIntegration \
     -H "Authorization: Bearer YOUR_TEMPORAL_TOKEN" \
     -H "Content-Type: application/json" \
     -d '{"chatId": 123456789, "scope": "prod"}'</code></pre>
@@ -367,7 +499,7 @@ pnpm run dev</code></pre>
             </table>
 
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X GET https://api.pingui-alert.dev/integrations/123456789 \
+            <pre><code>curl -X GET https://pingui-alert.dev/api/integrations/123456789 \
     -H "Authorization: Bearer TU_TOKEN"</code></pre>
           </section>
         </details>
@@ -414,7 +546,7 @@ pnpm run dev</code></pre>
   }</code></pre>
 
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X POST https://api.pingui-alert.dev/updateRateLimit \
+            <pre><code>curl -X POST https://pingui-alert.dev/api/updateRateLimit \
     -H "Authorization: Bearer YOUR_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{"chatId": 123456789, "rateLimit": 50}'</code></pre>
@@ -459,7 +591,7 @@ pnpm run dev</code></pre>
   }</code></pre>
 
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X POST https://api.pingui-alert.dev/revokeIntegration \
+            <pre><code>curl -X POST https://pingui-alert.dev/api/revokeIntegration \
     -H "Authorization: Bearer YOUR_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{"chatId": 123456789}'</code></pre>
@@ -545,7 +677,7 @@ USAGE=$(df / | grep / | awk '{ print $5 }' | sed 's/%//g')
 
 # Solo alertar si el uso es > 90% (Crítico)
 if [ "$USAGE" -gt 90 ]; then
-  curl -X POST https://api.pingui-alert.dev/alert \
+  curl -X POST https://pingui-alert.dev/api/alert \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
     -d '{
@@ -621,7 +753,7 @@ fi</code></pre>
     </div>
 
     <footer>
-      <p>&copy; 2025 Pingui Alert. Construido con ❤️ por <a href="https://github.com/juanvidev1">Juan Vicente</a>.</p>
+      <p>&copy; 2025 Pingui Alert. Construido con ❤️ por <a href="https://github.com/juanvidev1">JuanviDev</a>.</p>
     </footer>
   </body>
 </html>

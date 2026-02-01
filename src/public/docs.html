@@ -37,7 +37,16 @@
             <h3>Getting Started</h3>
           </summary>
           <a href="#introduction" class="sidebar-link">Introduction</a>
+          <a href="#architecture" class="sidebar-link">System Architecture</a>
           <a href="#setup" class="sidebar-link">Setup & Auth</a>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Open Source</h3>
+          </summary>
+          <a href="#self-hosting" class="sidebar-link">Self-Hosting</a>
+          <a href="#monitoring" class="sidebar-link">Monitoring & Logs</a>
+          <a href="#metrics" class="sidebar-link">System Metrics</a>
         </details>
         <details class="sidebar-group">
           <summary>
@@ -80,6 +89,33 @@
             directly from your code. It's designed to be dead simple to use, with zero configuration required on your
             server.
           </p>
+        </section>
+
+        <!-- System Architecture -->
+        <section id="architecture">
+          <h2>System Architecture</h2>
+          <p>Pingui Alert uses a queue-based architecture to ensure reliable alert delivery:</p>
+          
+          <div class="info-box" style="background: rgba(59, 130, 246, 0.1); border-left-color: #3b82f6">
+            <strong>🏗️ Architecture Flow:</strong><br>
+            API Request → Validation → Redis Queue → Worker → Telegram
+          </div>
+
+          <h3>Core Components</h3>
+          <ul class="steps-list">
+            <li><strong>REST API:</strong> Receives alerts and enqueues them</li>
+            <li><strong>Redis Queue:</strong> Stores pending alerts (max 500 alerts)</li>
+            <li><strong>Queue Worker:</strong> Processes alerts at 1 msg/second (Telegram safe limit)</li>
+            <li><strong>Scheduled Jobs:</strong> Automatic maintenance tasks</li>
+            <li><strong>Telegram Bot:</strong> Interface for managing integrations</li>
+          </ul>
+
+          <h3>Automatic Jobs</h3>
+          <p>The system runs scheduled maintenance tasks:</p>
+          <ul>
+            <li><strong>Rate Limit Reset (00:00 daily):</strong> Resets daily alert counter to 10 for all users</li>
+            <li><strong>Database Backup (03:00 daily):</strong> Creates automatic SQLite database backups</li>
+          </ul>
         </section>
 
         <!-- Setup & Authentication -->
@@ -151,6 +187,134 @@
           </ol>
         </section>
 
+        <!-- Self-Hosting -->
+        <section id="self-hosting">
+          <h2>Self-Hosting</h2>
+          <p>Pingui Alert is fully open source and can be self-hosted for complete control over your alerting infrastructure.</p>
+          
+          <h3>Prerequisites</h3>
+          <ul class="steps-list">
+            <li><strong>Node.js:</strong> v20 or higher</li>
+            <li><strong>pnpm:</strong> v9 or higher</li>
+            <li><strong>Redis:</strong> For queue system (local or hosted)</li>
+            <li><strong>Telegram Bot Token:</strong> Create via @BotFather</li>
+          </ul>
+
+          <h3>Quick Setup</h3>
+          <pre><code>git clone https://github.com/juanvidev1/pingui-alert
+cd pingui-alert
+pnpm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your values
+
+# Run in development
+pnpm run dev
+
+# Or build for production
+pnpm run build
+pnpm run start</code></pre>
+
+          <h3>Environment Variables</h3>
+          <pre><code># Required
+BOT_TOKEN=your_telegram_bot_token
+JWT_SECRET=your_jwt_secret
+REDIS_URL=redis://localhost:6379
+
+# Optional
+MAX_ALERTS=100  # Customize daily limit
+MAX_QUEUE_SIZE=500
+SEND_DELAY_MS=1000</code></pre>
+        </section>
+
+        <!-- Monitoring -->
+        <section id="monitoring">
+          <h2>Monitoring & Logs</h2>
+          <p>Pingui Alert provides comprehensive logging and monitoring capabilities:</p>
+          
+          <h3>Log Files</h3>
+          <ul class="steps-list">
+            <li><strong>logs/info.log:</strong> General events and processed alerts</li>
+            <li><strong>logs/error.log:</strong> Application errors and send failures</li>
+            <li><strong>logs/jobs.log:</strong> Scheduled job execution</li>
+          </ul>
+
+          <h3>Monitoring Commands</h3>
+          <pre><code># View alerts in real time
+tail -f logs/info.log | grep "Sending alert"
+
+# Monitor errors
+tail -f logs/error.log
+
+# Check job status
+tail -f logs/jobs.log
+
+# Redis queue size
+redis-cli LLEN pingui:queue:alerts</code></pre>
+        </section>
+
+        <!-- Metrics -->
+        <section id="metrics">
+          <h2>System Metrics</h2>
+          <p>Track system usage and performance with built-in metrics:</p>
+          
+          <div class="endpoint-badge" style="color: #10b981; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3)">
+            GET /api/metrics
+          </div>
+
+          <h3>Available Metrics</h3>
+          <ul class="steps-list">
+            <li><strong>Total Integrations:</strong> Number of registered integrations</li>
+            <li><strong>Total Sent Alerts:</strong> Cumulative alerts delivered</li>
+            <li><strong>Total Errors:</strong> Failed alert attempts</li>
+            <li><strong>Last Updated:</strong> Metrics freshness timestamp</li>
+          </ul>
+
+          <h3>Example Response</h3>
+          <pre><code>{
+  "totalIntegrations": 1234,
+  "totalSentAlerts": 45678,
+  "totalErrors": 23,
+  "metrics": [
+    {
+      "totalIntegrations": 1234,
+      "totalSentAlerts": 45678,
+      "totalErrors": 23,
+      "updatedAt": "2025-01-01T12:00:00Z"
+    }
+  ]
+}</code></pre>
+        </section>loy your own Pingui Alert server and bot. This gives you full
+              control over rate limits and ensures dedicated resources.
+            </li>
+            <li>
+              <strong>Use for Critical Alerts Only:</strong> If using @PinguiAlertBot, implement filtering logic to send
+              only high-priority notifications (failures, errors, security events).
+            </li>
+            <li>
+              <strong>Implement Batching:</strong> Group multiple non-critical alerts into periodic summary messages
+              instead of sending individual notifications.
+            </li>
+          </ul>
+
+          <h3>Self-Hosting</h3>
+          <p>To self-host Pingui Alert:</p>
+          <pre><code>git clone https://github.com/juanvidev1/pingui-alert
+cd pingui-alert
+
+# Set your environment variables
+export BOT_TOKEN="your_telegram_bot_token"
+export JWT_SECRET="your_secret_key"
+export MAX_ALERTS=100  # Customize your daily limit
+
+# Install dependencies
+pnpm install
+
+# Run the server
+pnpm run dev</code></pre>
+        </section>
+
         <!-- Production Usage -->
         <section id="production-usage">
           <h2>Production Usage</h2>
@@ -182,22 +346,6 @@
               instead of sending individual notifications.
             </li>
           </ul>
-
-          <h3>Self-Hosting</h3>
-          <p>To self-host Pingui Alert:</p>
-          <pre><code>git clone https://github.com/juanvidev1/pingui-alert
-cd pingui-alert
-
-# Set your environment variables
-export BOT_TOKEN="your_telegram_bot_token"
-export JWT_SECRET="your_secret_key"
-export MAX_ALERTS=100  # Customize your daily limit
-
-# Install dependencies
-pnpm install
-
-# Run the server
-pnpm run dev</code></pre>
         </section>
 
         <h2>API Reference</h2>
@@ -246,7 +394,7 @@ pnpm run dev</code></pre>
   }</code></pre>
 
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X POST https://api.pingui.com/alert \
+            <pre><code>curl -X POST https://pingui-alert.dev/api/alert \
     -H "Authorization: Bearer YOUR_TOKEN" \
     -H "Content-Type: application/json" \
     -d '{"title": "Your title here", "message": "Your message here", "chatId": "The telegram chat id where the alert will be sent"}'</code></pre>
@@ -295,7 +443,7 @@ pnpm run dev</code></pre>
 }</code></pre>
 
           <h3>Example (cURL)</h3>
-          <pre><code>curl -X POST https://api.pingui-alert.dev/createIntegration \
+          <pre><code>curl -X POST https://pingui-alert.dev/api/createIntegration \
   -H "Authorization: Bearer YOUR_TEMPORAL_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"chatId": 123456789, "scope": "prod"}'</code></pre>
@@ -338,7 +486,7 @@ pnpm run dev</code></pre>
             </table>
   
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X GET https://api.pingui-alert.dev/integrations/123456789 \
+            <pre><code>curl -X GET https://pingui-alert.dev/api/integrations/123456789 \
     -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
           </section>
         </details>
@@ -389,7 +537,7 @@ pnpm run dev</code></pre>
   }</code></pre>
   
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X POST https://api.pingui-alert.dev/updateRateLimit \
+            <pre><code>curl -X POST https://pingui-alert.dev/api/updateRateLimit \
     -H "Authorization: Bearer YOUR_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{"chatId": 123456789, "rateLimit": 50}'</code></pre>
@@ -434,7 +582,7 @@ pnpm run dev</code></pre>
   }</code></pre>
   
             <h3>Example (cURL)</h3>
-            <pre><code>curl -X POST https://api.pingui-alert.dev/revokeIntegration \
+            <pre><code>curl -X POST https://pingui-alert.dev/api/revokeIntegration \
     -H "Authorization: Bearer YOUR_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{"chatId": 123456789}'</code></pre>
@@ -527,7 +675,7 @@ USAGE=$(df / | grep / | awk '{ print $5 }' | sed 's/%//g')
 
 # Only alert if usage is > 90% (Critical)
 if [ "$USAGE" -gt 90 ]; then
-  curl -X POST https://api.pingui-alert.dev/alert \
+  curl -X POST https://pingui-alert.dev/api/alert \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
     -d '{
@@ -602,7 +750,7 @@ fi</code></pre>
     </div>
 
     <footer>
-      <p>&copy; 2025 Pingui Alert. Built with ❤️ by <a href="https://github.com/juanvidev1">Juan Vicente</a>.</p>
+      <p>&copy; 2025 Pingui Alert. Built with ❤️ by <a href="https://github.com/juanvidev1">JuanviDev</a>.</p>
     </footer>
   </body>
 </html>

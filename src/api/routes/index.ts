@@ -4,7 +4,7 @@ import { verifyJwtToken, validateRateLimit, validateStatus, verifyTemporalToken 
 
 const apiRouter = new Hono().basePath('/api');
 
-apiRouter.get('/metrics', MetricsController.getMetrics);
+apiRouter.get('/metrics/daily', MetricsController.getMetrics);
 
 apiRouter.post('/temporal-token', ApiController.createTemporalToken);
 
