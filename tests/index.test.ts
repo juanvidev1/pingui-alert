@@ -1,7 +1,46 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mockIntegrationService, mockQueueService, mockUtils, mockBot } from './mocks.js';
 import app from '../src/api/index.js';
-import { mock } from 'node:test';
+import { checkLimit } from '../src/services/rateLimit.service.js';
+
+// Test for rate limit service
+describe('Rate Limit Service', () => {
+  const WINDOW = 60000;
+  const LIMIT = 3;
+
+  it('allows requests under limit', () => {
+    const store = new Map();
+    const now = Date.now();
+
+    expect(checkLimit(store, 'token:abc', LIMIT, WINDOW, now).allowed).toBe(true);
+    expect(checkLimit(store, 'token:abc', LIMIT, WINDOW, now).allowed).toBe(true);
+    expect(checkLimit(store, 'token:abc', LIMIT, WINDOW, now).allowed).toBe(true);
+  });
+
+  it('blocks when limit exceeded', () => {
+    const store = new Map();
+    const now = Date.now();
+
+    checkLimit(store, 'token:abc', LIMIT, WINDOW, now);
+    checkLimit(store, 'token:abc', LIMIT, WINDOW, now);
+    checkLimit(store, 'token:abc', LIMIT, WINDOW, now);
+
+    expect(checkLimit(store, 'token:abc', LIMIT, WINDOW, now).allowed).toBe(false);
+  });
+
+  it('resets after window', () => {
+    const store = new Map();
+    const now = Date.now();
+
+    checkLimit(store, 'token:abc', LIMIT, WINDOW, now);
+    checkLimit(store, 'token:abc', LIMIT, WINDOW, now);
+    checkLimit(store, 'token:abc', LIMIT, WINDOW, now);
+
+    const later = now + WINDOW + 1;
+
+    expect(checkLimit(store, 'token:abc', LIMIT, WINDOW, later).allowed).toBe(true);
+  });
+});
 
 // Test for creating an alert. Has mocked change rate limit service.
 describe('POST /api/alert', () => {

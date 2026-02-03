@@ -18,7 +18,7 @@ export class MetricsService {
         Logger.infoLog({ chatId: 0, message: 'Daily metrics record already exists for ' + actualDate });
       }
     } catch (error) {
-      Logger.errorLog({ chatId: 0, message: 'Failed to create daily metrics record ' + error });
+      Logger.errorLog({ chatId: 0, message: 'Failed to create daily metrics record for ' + actualDate + ': ' + error });
     }
   }
 
@@ -28,7 +28,7 @@ export class MetricsService {
       await Metrics.increment('totalIntegrations', { by: 1, where: { date: actualDate } });
       return true;
     } catch (error) {
-      Logger.errorLog({ chatId, message: 'Failed to increment integrations count ' + error });
+      Logger.errorLog({ chatId, message: 'Failed to increment integrations count for ' + actualDate + ': ' + error });
       return false;
     }
   }

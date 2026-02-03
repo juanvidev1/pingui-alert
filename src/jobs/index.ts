@@ -29,7 +29,7 @@ export function initializeJobs() {
   });
 
   // Schedule the creation of new row on Metrics table every day at midnight
-  cron.schedule('0 0 * * *', async () => {
+  cron.schedule('0 1 * * *', async () => {
     try {
       await MetricsService.createDailyMetricsRecord();
       Logger.jobsLog({ chatId: 0, message: '[JOB] createMetricsRowJob executed successfully.' });
