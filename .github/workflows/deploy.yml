@@ -40,6 +40,6 @@ jobs:
             export PATH=$PATH:/home/${{ secrets.VPS_USER }}/.local/bin
             cd /home/${{ secrets.VPS_USER }}/pingui-alert
             git pull origin main
-            pnpm install
-            pnpm run build
-            pm2 restart pingui-alert || pm2 start ecosystem.config.js --env production
+            /home/${{ secrets.VPS_USER }}/.local/share/pnpm/pnpm install
+            /home/${{ secrets.VPS_USER }}/.local/share/pnpm/pnpm run build
+            /home/${{ secrets.VPS_USER }}/.nvm/versions/node/v25.4.0/bin/pm2 restart pingui-alert || pm2 start ecosystem.config.js --env production
