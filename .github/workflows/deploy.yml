@@ -37,7 +37,6 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            export PATH=$PATH:/home/${{ secrets.VPS_USER }}/.local/bin
             cd /home/${{ secrets.VPS_USER }}/pingui-alert
             git pull origin main
             /home/${{ secrets.VPS_USER }}/.local/share/pnpm/pnpm install
