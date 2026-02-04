@@ -1,4 +1,4 @@
-import { checkLimit } from '../services/rateLimit.service';
+import { checkLimit } from '../services/rateLimit.service.js';
 
 const store: Map<string, { count: number; lastReset: number }> = new Map();
 
