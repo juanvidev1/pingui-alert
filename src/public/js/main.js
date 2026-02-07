@@ -54,6 +54,8 @@ const initializeMetrics = async (date) => {
 };
 
 const dateSelector = document.getElementById('date-selector');
+dateSelector.setAttribute('min', '2026-01-31');
+dateSelector.setAttribute('max', date);
 dateSelector.value = date;
 let selectedDate = date;
 dateSelector.addEventListener('change', async (event) => {

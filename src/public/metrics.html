@@ -33,6 +33,7 @@
         <a href="/es" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
           <span style="font-size: 1.1em">🇪🇸</span> ES
         </a>
+        <a href="/metrics" class="nav-link active">Metrics</a>
       </div>
     </nav>
 
@@ -46,8 +47,27 @@
 
         <!-- Date Selector -->
         <div class="fade-in-up" style="animation-delay: 0.2s; margin-top: 2rem">
-          <div class="card" style="display: inline-block; padding: 1.5rem 2rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1)">
-            <label for="date-selector" style="display: block; margin-bottom: 0.75rem; color: var(--text-primary); font-weight: 600; font-size: 0.95rem">📅 Select Date</label>
+          <div
+            class="card"
+            style="
+              display: inline-block;
+              padding: 1.5rem 2rem;
+              background: rgba(255, 255, 255, 0.05);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            "
+          >
+            <label
+              for="date-selector"
+              style="
+                display: block;
+                margin-bottom: 0.75rem;
+                color: var(--text-primary);
+                font-weight: 600;
+                font-size: 0.95rem;
+              "
+              >📅 Select Date</label
+            >
             <input
               type="date"
               id="date-selector"
@@ -64,10 +84,23 @@
                 transition: all 0.3s ease;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
               "
-              onmouseover="this.style.borderColor='var(--accent-primary)'; this.style.boxShadow='0 6px 20px rgba(139, 92, 246, 0.2)'"
-              onmouseout="this.style.borderColor='transparent'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.1)'"
-              onfocus="this.style.borderColor='var(--accent-primary)'; this.style.boxShadow='0 6px 20px rgba(139, 92, 246, 0.3)'"
-              onblur="this.style.borderColor='transparent'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.1)'"
+              min="2026-01-31"
+              onmouseover="
+                this.style.borderColor = 'var(--accent-primary)';
+                this.style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.2)';
+              "
+              onmouseout="
+                this.style.borderColor = 'transparent';
+                this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+              "
+              onfocus="
+                this.style.borderColor = 'var(--accent-primary)';
+                this.style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.3)';
+              "
+              onblur="
+                this.style.borderColor = 'transparent';
+                this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+              "
             />
           </div>
         </div>
