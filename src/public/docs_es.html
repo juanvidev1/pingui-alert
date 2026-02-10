@@ -122,6 +122,12 @@
               SQLite
             </li>
           </ul>
+
+          <div class="info-box" style="background: rgba(251, 146, 60, 0.1); border-left-color: #fb923c">
+            <strong>⚠️ Importante:</strong> Redis es <strong>obligatorio</strong> para que Pingui Alert funcione. El
+            sistema de colas depende de Redis para almacenar y procesar alertas. Asegúrate de tener Redis ejecutándose
+            antes de iniciar la aplicación en caso de que estés alojando la instancia tú mismo.
+          </div>
         </section>
 
         <section id="setup">
@@ -612,11 +618,19 @@ redis-cli LLEN pingui:queue:alerts</code></pre>
           <pre><code>npm install pingui-alert</code></pre>
 
           <h3>Uso</h3>
-          <pre><code>import { Pingui } from 'pingui-alert';
+          <pre><code>import { PinguiAlert } from 'pingui-alert-sdk';
 
-const client = new Pingui('TU_API_KEY');
+const pinguiAlert = new PinguiAlert({
+  chatId: process.env.PINGUI_ALERT_CHAT_ID,
+  token: process.env.PINGUI_ALERT_API_KEY,
+});
 
-await client.send('¡Backup de base de datos completado con éxito! ✅');</code></pre>
+// Opcional: Validar el estado de la integración antes de enviar una alerta. Esto verifica si la integración está activa y tiene cuota.
+const pinguiStatus = await pinguiAlert.validateStatus();
+console.log('Estado de Pingui Alert:', pinguiStatus); // Ejemplo de respuesta exitosa: { success: true, remainingAlerts: 9 }
+
+// Este método permite enviar una alerta. El primer parámetro es el mensaje que se enviará. El segundo parámetro es opcional y puede usarse para establecer un título para la alerta
+await pinguiAlert.send('¡Backup de base de datos completado con éxito! ✅', 'Trabajo Completado');</code></pre>
         </section>
 
         <section id="use-cases">

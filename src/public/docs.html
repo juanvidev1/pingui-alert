@@ -117,6 +117,10 @@
             <li><strong>Rate Limit Reset (00:00 daily):</strong> Resets daily alert counter to 10 for all users</li>
             <li><strong>Database Backup (03:00 daily):</strong> Creates automatic SQLite database backups</li>
           </ul>
+
+          <div class="info-box" style="background: rgba(251, 146, 60, 0.1); border-left-color: #fb923c">
+            <strong>⚠️ Important:</strong> Redis is <strong>required</strong> for Pingui Alert to function. The queue system depends on Redis to store and process alerts. Make sure you have Redis running before starting the application if you are self-hosting it.
+          </div>
         </section>
 
         <!-- Setup & Authentication -->
@@ -610,11 +614,19 @@ pnpm run dev</code></pre>
             <li>On the public bot use the command /get_me to get your chatId.</li>
             <li>Use the API KEY and chatId in the code below:</li>
           </ol>
-          <pre><code>import { Pingui } from 'pingui-alert';
+          <pre><code>import { PinguiAlert } from 'pingui-alert-sdk';
 
-const client = new Pingui('YOUR_API_KEY');
+const pinguiAlert = new PinguiAlert({
+  chatId: process.env.PINGUI_ALERT_CHAT_ID,
+  token: process.env.PINGUI_ALERT_API_KEY,
+});
 
-await client.send('Database backup completed successfully! ✅', 'YOUR_CHAT_ID');</code></pre>
+// Optional: Validate integration status before sending an alert. This checks if the integration is active and has quota.
+const pinguiStatus = await pinguiAlert.validateStatus();
+console.log('Pingui Alert status:', pinguiStatus);
+
+// This method allows you to send an alert. The first parameter is the message to be sent. The second parameter is optional and can be used to set a title for the alert
+await pinguiAlert.send('Database backup completed successfully! ✅', 'Job Completed');</code></pre>
         </section>
 
         <section id="use-cases">

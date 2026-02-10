@@ -55,6 +55,8 @@ cron.schedule('0 3 * * *', backupDbJob);
 5. **Sending**: Sent to Telegram with rate limiting
 6. **Logging**: Result is logged
 
+> **⚠️ Important:** Redis is **required** for Pingui Alert to function. The queue system depends on Redis to store and process alerts. Make sure you have Redis running before starting the application.
+
 ## Prerequisites
 
 - **Node.js**: v20 or higher recommended.
