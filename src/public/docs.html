@@ -623,7 +623,7 @@ const pinguiAlert = new PinguiAlert({
 
 // Optional: Validate integration status before sending an alert. This checks if the integration is active and has quota.
 const pinguiStatus = await pinguiAlert.validateStatus();
-console.log('Pingui Alert status:', pinguiStatus);
+console.log('Pingui Alert status:', pinguiStatus); // Example response: { active: true, remainingAlerts: 9 }
 
 // This method allows you to send an alert. The first parameter is the message to be sent. The second parameter is optional and can be used to set a title for the alert
 await pinguiAlert.send('Database backup completed successfully! ✅', 'Job Completed');</code></pre>
