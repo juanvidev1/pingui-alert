@@ -1,12 +1,12 @@
-# Arquitectura Técnica - Pingui Alert
+# Technical Architecture - Pingui Alert
 
-## Visión General del Sistema
+## System Overview
 
-Pingui Alert implementa una arquitectura de microservicios ligera con los siguientes componentes:
+Pingui Alert implements a lightweight microservices architecture with the following components:
 
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Cliente   │───▶│  API REST   │───▶│ Cola Redis  │───▶│   Worker    │
+│   Client    │───▶│  REST API   │───▶│ Redis Queue │───▶│   Worker    │
 └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
                            │                                      │
                            ▼                                      ▼
@@ -20,24 +20,24 @@ Pingui Alert implementa una arquitectura de microservicios ligera con los siguie
                    └─────────────┘
 ```
 
-## Componentes Detallados
+## Detailed Components
 
-### 1. API REST (Hono.js)
+### 1. REST API (Hono.js)
 
-**Endpoints principales:**
-- `POST /api/alert` - Recibe y encola alertas
-- `POST /api/createIntegration` - Crea nuevas integraciones
-- `GET /api/integrations/:chatId` - Consulta integraciones
-- `POST /api/revokeIntegration` - Revoca integraciones
+**Main endpoints:**
+- `POST /api/alert` - Receives and enqueues alerts
+- `POST /api/createIntegration` - Creates new integrations
+- `GET /api/integrations/:chatId` - Queries integrations
+- `POST /api/revokeIntegration` - Revokes integrations
 
 **Middlewares:**
-- `verifyJwtToken` - Autenticación JWT
-- `validateRateLimit` - Control de límites de uso
-- `validateStatus` - Verificación de estado de integración
+- `verifyJwtToken` - JWT authentication
+- `validateRateLimit` - Usage limit control
+- `validateStatus` - Integration status verification
 
-### 2. Sistema de Colas (Redis)
+### 2. Queue System (Redis)
 
-**Configuración:**
+**Configuration:**
 ```typescript
 const QUEUE_KEY = 'pingui:queue:alerts';
 const LOCK_KEY = 'pingui:queue:processing';
@@ -45,28 +45,28 @@ const MAX_QUEUE_SIZE = 500;
 const SEND_DELAY_MS = 1000;
 ```
 
-**Flujo de procesamiento:**
-1. **Enqueue**: `LPUSH` a la cola Redis
-2. **Lock**: Adquiere lock distribuido para evitar concurrencia
-3. **Dequeue**: `LPOP` de la cola
-4. **Process**: Envía mensaje a Telegram
-5. **Release**: Libera lock y espera delay
+**Processing flow:**
+1. **Enqueue**: `LPUSH` to Redis queue
+2. **Lock**: Acquires distributed lock to avoid concurrency
+3. **Dequeue**: `LPOP` from queue
+4. **Process**: Sends message to Telegram
+5. **Release**: Releases lock and waits delay
 
-### 3. Worker de Cola
+### 3. Queue Worker
 
-**Características:**
-- **Single Consumer**: Un worker por instancia
-- **Rate Limiting**: 1 mensaje/segundo (Telegram limits)
-- **Error Handling**: Best-effort, no retry automático
-- **Logging**: Registro detallado de procesamiento
+**Features:**
+- **Single Consumer**: One worker per instance
+- **Rate Limiting**: 1 message/second (Telegram limits)
+- **Error Handling**: Best-effort, no automatic retry
+- **Logging**: Detailed processing logs
 
-**Algoritmo:**
+**Algorithm:**
 ```typescript
 while (true) {
-  // 1. Adquirir lock
+  // 1. Acquire lock
   const lock = await redis.set(LOCK_KEY, '1', { NX: true, PX: 10000 });
   
-  // 2. Procesar mensaje si hay lock
+  // 2. Process message if lock acquired
   if (lock) {
     const job = await redis.lPop(QUEUE_KEY);
     if (job) {
@@ -75,26 +75,26 @@ while (true) {
     await redis.del(LOCK_KEY);
   }
   
-  // 3. Esperar antes del siguiente ciclo
+  // 3. Wait before next cycle
   await sleep(SEND_DELAY_MS);
 }
 ```
 
-### 4. Jobs Programados (node-cron)
+### 4. Scheduled Jobs (node-cron)
 
 #### Reset Rate Limits
-- **Schedule**: `0 0 * * *` (medianoche diaria)
-- **Función**: Reinicia `rateLimit` a 10 para todas las integraciones
+- **Schedule**: `0 0 * * *` (daily midnight)
+- **Function**: Resets `rateLimit` to 10 for all integrations
 - **Query**: `UPDATE Integrations SET rateLimit = 10`
 
 #### Backup Database
-- **Schedule**: `0 3 * * *` (3 AM diaria)
-- **Función**: Copia archivo SQLite con timestamp
-- **Ubicación**: `./backups/pingui/pingui-backup-{timestamp}.db`
+- **Schedule**: `0 3 * * *` (daily 3 AM)
+- **Function**: Copies SQLite file with timestamp
+- **Location**: `./backups/pingui/pingui-backup-{timestamp}.db`
 
-### 5. Base de Datos (SQLite)
+### 5. Database (SQLite)
 
-**Modelo Integration:**
+**Integration Model:**
 ```sql
 CREATE TABLE Integrations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -108,50 +108,50 @@ CREATE TABLE Integrations (
 );
 ```
 
-## Patrones de Diseño Implementados
+## Implemented Design Patterns
 
 ### 1. **Producer-Consumer Pattern**
-- API actúa como Producer
-- Worker actúa como Consumer
-- Redis como Message Broker
+- API acts as Producer
+- Worker acts as Consumer
+- Redis as Message Broker
 
 ### 2. **Circuit Breaker Pattern**
-- Rate limiting previene sobrecarga
-- Queue size limit previene memory overflow
+- Rate limiting prevents overload
+- Queue size limit prevents memory overflow
 
 ### 3. **Retry Pattern**
-- Implementado a nivel de aplicación
-- Best-effort delivery sin retry automático
+- Implemented at application level
+- Best-effort delivery without automatic retry
 
 ### 4. **Observer Pattern**
-- Logging centralizado para todos los eventos
-- Separación de concerns entre componentes
+- Centralized logging for all events
+- Separation of concerns between components
 
-## Consideraciones de Rendimiento
+## Performance Considerations
 
 ### Throughput
-- **Máximo teórico**: 86,400 mensajes/día (1 msg/seg × 24h)
-- **Límite de cola**: 500 mensajes pendientes
-- **Límite por usuario**: 10 mensajes/día
+- **Theoretical maximum**: 86,400 messages/day (1 msg/sec × 24h)
+- **Queue limit**: 500 pending messages
+- **Per-user limit**: 10 messages/day
 
-### Latencia
-- **API Response**: < 50ms (solo enqueue)
-- **End-to-end**: 1-500 segundos (dependiendo de posición en cola)
+### Latency
+- **API Response**: < 50ms (enqueue only)
+- **End-to-end**: 1-500 seconds (depending on queue position)
 
-### Escalabilidad
-- **Horizontal**: Múltiples workers con Redis compartido
-- **Vertical**: Aumentar SEND_DELAY_MS para mayor throughput
-- **Storage**: SQLite → PostgreSQL para mayor concurrencia
+### Scalability
+- **Horizontal**: Multiple workers with shared Redis
+- **Vertical**: Increase SEND_DELAY_MS for higher throughput
+- **Storage**: SQLite → PostgreSQL for higher concurrency
 
-## Monitoreo y Observabilidad
+## Monitoring and Observability
 
-### Métricas Clave
+### Key Metrics
 - Queue size (`LLEN pingui:queue:alerts`)
-- Processing rate (mensajes/minuto)
-- Error rate (fallos de envío)
-- Rate limit hits por usuario
+- Processing rate (messages/minute)
+- Error rate (send failures)
+- Rate limit hits per user
 
-### Logs Estructurados
+### Structured Logs
 ```typescript
 Logger.infoLog({ 
   chatId: number, 
@@ -167,39 +167,39 @@ Logger.infoLog({
 - Database accessibility
 - Queue processing status
 
-## Seguridad
+## Security
 
-### Autenticación
-- JWT tokens con scope-based permissions
-- Temporal tokens para setup inicial
+### Authentication
+- JWT tokens with scope-based permissions
+- Temporal tokens for initial setup
 
 ### Rate Limiting
-- 10 mensajes/día por integración
-- Queue size limit global
+- 10 messages/day per integration
+- Global queue size limit
 
 ### Data Protection
-- Chat IDs hasheados en logs
-- No almacenamiento de contenido de mensajes
-- Tokens JWT con expiración
+- Chat IDs hashed in logs
+- No message content storage
+- JWT tokens with expiration
 
 ## Deployment
 
-### Dependencias de Runtime
+### Runtime Dependencies
 - Node.js v20+
 - Redis server
-- SQLite (incluido)
+- SQLite (included)
 
-### Variables de Entorno Críticas
+### Critical Environment Variables
 ```env
 BOT_TOKEN=telegram_bot_token
 JWT_SECRET=jwt_signing_key
 REDIS_URL=redis://localhost:6379
 ```
 
-### Proceso de Inicio
-1. Inicializar base de datos
-2. Conectar a Redis
-3. Iniciar worker de cola
-4. Programar jobs
-5. Iniciar bot de Telegram
-6. Iniciar servidor HTTP
+### Startup Process
+1. Initialize database
+2. Connect to Redis
+3. Start queue worker
+4. Schedule jobs
+5. Start Telegram bot
+6. Start HTTP server
