@@ -10,5 +10,6 @@ export default {
   dbDialect: process.env.DB_DIALECT,
   dbStorage: process.env.DB_STORAGE,
   backupRoute: process.env.DB_BACKUP_PATH,
-  dbStoragePath: process.env.DB_STORAGE_PATH
+  dbStoragePath: process.env.DB_STORAGE_PATH,
+  dbUrl: process.env.DB_URL || ''
 };

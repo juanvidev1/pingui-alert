@@ -1,12 +1,25 @@
 import { Sequelize } from 'sequelize';
 import config from '../config/index.js';
 
-const storage = config.dbStorage || ('./storage/pingui.db' as any);
+let sequelize: Sequelize;
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage,
-  logging: false
-});
+if (config.dbUrl) {
+  sequelize = new Sequelize(config.dbUrl, {
+    dialect: 'postgres',
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  });
+} else {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: config.dbStorage || './storage/pingui.db',
+    logging: false
+  });
+}
 
 export default sequelize;
