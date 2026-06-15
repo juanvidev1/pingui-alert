@@ -12,4 +12,4 @@ startQueueWorker();
 initializeJobs();
 bot.start();
 
-serve({ fetch: app.fetch, port: 3035 });
+serve({ fetch: app.fetch, port: 3030 });
