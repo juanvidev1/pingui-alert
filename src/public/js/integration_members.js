@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     tg.MainButton.show();
     tg.MainButton.setText('Close');
     tg.MainButton.onClick(() => {
-      console.log('Main button clicked');
+      tg.sendData(JSON.stringify({ action: 'close', message: 'No members to revoke' }));
       tg.close();
     });
   }
@@ -116,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (tg) {
               tg.MainButton.setText(`Close`);
               tg.MainButton.onClick(() => {
-                console.log('Main button clicked');
                 if (membersToRevoke.length === 0) {
                   tg.sendData(JSON.stringify({ action: 'close', message: 'No members to revoke' }));
                   tg.close();
