@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Init data', tg?.initDataRaw);
     tg.MainButton.show();
     tg.MainButton.setText('Close');
+    tg.MainButton.onClick(() => {
+      console.log('Main button clicked');
+      tg.close();
+    });
   }
 
   const membersContainer = document.getElementById('integration-members');
@@ -111,6 +115,13 @@ document.addEventListener('DOMContentLoaded', function () {
             revokeBtn.innerHTML = 'Revoke member';
             if (tg) {
               tg.MainButton.setText(`Close`);
+              tg.MainButton.onClick(() => {
+                console.log('Main button clicked');
+                if (membersToRevoke.length === 0) {
+                  tg.sendData(JSON.stringify({ action: 'close', message: 'No members to revoke' }));
+                  tg.close();
+                }
+              });
             }
           } else {
             membersToRevoke.push(chatId);
