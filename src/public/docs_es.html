@@ -61,11 +61,18 @@
             <h3>Referencia API</h3>
           </summary>
           <a href="#send-alert" class="sidebar-link">Enviar Alerta</a>
+          <a href="#alert-members" class="sidebar-link">Alertar Miembros</a>
           <a href="#create-integration" class="sidebar-link">Crear Integración</a>
           <a href="#get-integration" class="sidebar-link">Obtener Integración</a>
-          <a href="#update-rate-limit" class="sidebar-link">Actualizar Rate Limit</a>
           <a href="#revoke-integration" class="sidebar-link">Revocar Integración</a>
-          <a href="#check-quota" class="sidebar-link">Verificar Cuota</a>
+          <a href="#integration-members" class="sidebar-link">Miembros de Integración</a>
+          <a href="#change-member-status" class="sidebar-link">Cambiar Estado de Miembro</a>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Bot de Telegram</h3>
+          </summary>
+          <a href="#bot-commands" class="sidebar-link">Referencia de Comandos</a>
         </details>
         <details class="sidebar-group">
           <summary>
@@ -560,13 +567,178 @@ redis-cli LLEN pingui:queue:alerts</code></pre>
           </section>
         </details>
 
-        <!-- Revoke integration -->
+        <!-- Alertar Miembros -->
         <details>
-          <summary>
+          <summary id="alert-members">
+            <h2>Alertar Miembros</h2>
+            <p>Envía una alerta a todos los miembros activos de tu integración.</p>
+          </summary>
+          <section>
+            <h2>Alertar Miembros</h2>
+            <p>Envía una alerta a todos los miembros activos vinculados a tu integración.</p>
+
+            <div class="endpoint-badge">POST /alert/members</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;TU_API_KEY&gt;</code></td>
+                  <td>Tu token JWT permanente.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Requerido.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+  "chatId": 123456789,
+  "title": "Alerta de Despliegue",
+  "message": "El despliegue en producción falló."
+}</code></pre>
+
+            <h3>Respuesta</h3>
+            <pre><code>{
+  "message": "Alert enqueued to members",
+  "succesNotifications": 3,
+  "totalMembers": 4
+}</code></pre>
+
+            <h3>Ejemplo (cURL)</h3>
+            <pre><code>curl -X POST https://pingui-alert.dev/api/alert/members \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"chatId": 123456789, "title": "Alerta de Despliegue", "message": "El despliegue en producción falló."}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Miembros de Integración -->
+        <details>
+          <summary id="integration-members">
+            <h2>Obtener Miembros de Integración</h2>
+            <p>Recupera todos los miembros vinculados a una integración.</p>
+          </summary>
+          <section>
+            <h2>Obtener Miembros de Integración</h2>
+
+            <div
+              class="endpoint-badge"
+              style="color: #3b82f6; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3)"
+            >
+              GET /integration-members?chatId=:chatId
+            </div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;TU_API_KEY&gt;</code></td>
+                  <td>Tu token JWT permanente.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Parámetros de Query</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Parámetro</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>chatId</code></td>
+                  <td>Tu Telegram chat ID (propietario).</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Ejemplo (cURL)</h3>
+            <pre><code>curl -X GET "https://pingui-alert.dev/api/integration-members?chatId=123456789" \
+  -H "Authorization: Bearer TU_API_KEY"</code></pre>
+          </section>
+        </details>
+
+        <!-- Cambiar Estado de Miembro -->
+        <details>
+          <summary id="change-member-status">
+            <h2>Cambiar Estado de Miembro</h2>
+            <p>Activa o desactiva un miembro para que reciba alertas.</p>
+          </summary>
+          <section>
+            <h2>Cambiar Estado de Miembro</h2>
+
+            <div class="endpoint-badge">POST /change-member-status</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Valor</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;TU_API_KEY&gt;</code></td>
+                  <td>Tu token JWT permanente.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Requerido.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+  "chatId": 987654321,
+  "integrationId": 1,
+  "activeMember": false
+}</code></pre>
+
+            <h3>Ejemplo (cURL)</h3>
+            <pre><code>curl -X POST https://pingui-alert.dev/api/change-member-status \
+  -H "Authorization: Bearer TU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"chatId": 987654321, "integrationId": 1, "activeMember": false}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Revocar Integración -->
+        <details>
+          <summary id="revoke-integration">
             <h2>Revocar Integración</h2>
             <p>Revoca (desactiva) una integración.</p>
           </summary>
-          <section id="revoke-integration">
+          <section>
+            <h2>Revocar Integración</h2>
+            <p>Revoca (desactiva) una integración existente.</p>
+
             <div class="endpoint-badge">POST /revokeIntegration</div>
 
             <h3>Headers</h3>
@@ -606,6 +778,115 @@ redis-cli LLEN pingui:queue:alerts</code></pre>
         </details>
 
         <!-- NPM package -->
+        <section id="bot-commands">
+          <h2>Comandos del Bot de Telegram</h2>
+          <p>Toda interacción con Pingui Alert comienza desde el bot de Telegram. Aquí tienes la referencia completa de los comandos disponibles.</p>
+
+          <div class="info-box">
+            <strong>📌 Nota para miembros:</strong> Si vas a unirte a una integración como miembro (no como propietario), debes ejecutar <code>/start</code> en el bot primero para que el sistema registre tu chat ID antes de que puedas recibir alertas.
+          </div>
+
+          <h3>Comandos Generales</h3>
+
+          <details>
+            <summary id="cmd-help">
+              <h4>/help</h4>
+              <p>Devuelve un enlace a la documentación oficial.</p>
+            </summary>
+            <section>
+              <h4>/help</h4>
+              <p>Devuelve un enlace a la documentación oficial.</p>
+              <pre><code>/help</code></pre>
+              <p><strong>Respuesta:</strong> Un mensaje con el enlace a <code>https://pingui-alert.dev/docs</code>.</p>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-get-me">
+              <h4>/get_me</h4>
+              <p>Devuelve tu Telegram chat ID. Lo necesitarás para enviar alertas vía la API.</p>
+            </summary>
+            <section>
+              <h4>/get_me</h4>
+              <p>Devuelve tu Telegram chat ID. Usarás este valor como el campo <code>chatId</code> en todas las peticiones a la API.</p>
+              <pre><code>/get_me</code></pre>
+              <p><strong>Respuesta:</strong> <code>Your user id is: 123456789</code></p>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-temporal-token">
+              <h4>/temporal_token</h4>
+              <p>Genera un token de corta duración (5 min) para crear tu primera integración.</p>
+            </summary>
+            <section>
+              <h4>/temporal_token</h4>
+              <p>Genera un token JWT temporal válido por 5 minutos. Úsalo inmediatamente con el endpoint <code>POST /createIntegration</code> para obtener tu API key permanente.</p>
+              <pre><code>/temporal_token</code></pre>
+              <p><strong>Respuesta:</strong> <code>This is your temporal token, it will expire in 5 minutes: &lt;token&gt;</code></p>
+            </section>
+          </details>
+
+          <h3>Comandos de Miembro</h3>
+
+          <details>
+            <summary id="cmd-join">
+              <h4>/join &lt;code&gt;</h4>
+              <p>Unírete a una integración como miembro usando un código de invitación.</p>
+            </summary>
+            <section>
+              <h4>/join &lt;code&gt;</h4>
+              <p>Se une a una integración existente como miembro. El código de invitación debe ser proporcionado por el propietario de la integración mediante <code>/create_invite</code>.</p>
+              <div class="info-box" style="background: rgba(251, 146, 60, 0.1); border-left-color: #fb923c">
+                <strong>⚠️ Prerequisito:</strong> Debes haber ejecutado <code>/start</code> en el bot al menos una vez antes de usar este comando, de lo contrario el sistema no podrá registrarte.
+              </div>
+              <pre><code>/join ABC123</code></pre>
+              <p><strong>Respuesta:</strong> <code>Joined successfully</code></p>
+            </section>
+          </details>
+
+          <h3>Comandos Solo para Propietarios</h3>
+          <p>Estos comandos requieren una integración activa y están restringidos al propietario de la integración.</p>
+
+          <details>
+            <summary id="cmd-join-owner">
+              <h4>/join_owner</h4>
+              <p>Te añade a ti mismo (el propietario) como miembro de tu propia integración.</p>
+            </summary>
+            <section>
+              <h4>/join_owner</h4>
+              <p>Registra al propietario de la integración como miembro para que también reciba las alertas enviadas a <code>POST /alert/members</code>.</p>
+              <pre><code>/join_owner</code></pre>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-create-invite">
+              <h4>/create_invite</h4>
+              <p>Genera un código de invitación para compartir con personas que quieras añadir como miembros.</p>
+            </summary>
+            <section>
+              <h4>/create_invite</h4>
+              <p>Crea un nuevo código de invitación para tu integración. Compártelo con quien quieras añadir como miembro — deben usar <code>/join &lt;code&gt;</code> para unirse.</p>
+              <pre><code>/create_invite</code></pre>
+              <p><strong>Respuesta:</strong> <code>The code for joining the integration alerts is ABC123</code></p>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-get-members">
+              <h4>/get_members</h4>
+              <p>Abre un panel para ver y gestionar los miembros de tu integración.</p>
+            </summary>
+            <section>
+              <h4>/get_members</h4>
+              <p>Devuelve la lista de todos los miembros de tu integración y abre un panel web para activarlos o desactivarlos.</p>
+              <pre><code>/get_members</code></pre>
+              <p><strong>Respuesta:</strong> Un mensaje con un botón inline para abrir el panel de gestión de miembros.</p>
+            </section>
+          </details>
+        </section>
+
         <section id="npm-package">
           <h2>Paquete NPM</h2>
           <p>

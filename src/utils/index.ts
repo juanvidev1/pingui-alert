@@ -25,3 +25,15 @@ export const generateUniqueId = (number?: boolean) => {
   }
   return crypto.randomBytes(16).toString('hex');
 };
+
+export const generateRandomCode = (size: number = 6) => {
+  return crypto.randomBytes(size).toString('hex');
+};
+
+export const hashCode = (code: string) => {
+  return crypto.createHash('sha256').update(code).digest('hex');
+};
+
+export const verifyCodeHash = (code: string, hash: string) => {
+  return hashCode(code) === hash;
+};

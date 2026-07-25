@@ -27,13 +27,21 @@ redis.on('error', (err) => {
 export async function enqueueAlert(alertJob: AlertJob) {
   const queueSize = await redis.lLen(QUEUE_KEY);
 
-  if (queueSize >= MAX_QUEUE_SIZE) {
-    Logger.errorLog({ chatId: alertJob.chatId, message: 'Queue is full' });
-    throw new Error('Queue is full');
-  }
+  try {
+    if (queueSize >= MAX_QUEUE_SIZE) {
+      Logger.errorLog({ chatId: alertJob.chatId, message: 'Queue is full' });
+      throw new Error('Queue is full');
+    }
 
-  await redis.lPush(QUEUE_KEY, JSON.stringify(alertJob));
-  Logger.infoLog({ chatId: alertJob.chatId, message: 'Alert enqueued' });
+    await redis.lPush(QUEUE_KEY, JSON.stringify(alertJob));
+    Logger.infoLog({ chatId: alertJob.chatId, message: 'Alert enqueued' });
+    return true;
+  } catch (error) {
+    if (error instanceof Error) {
+      Logger.errorLog({ chatId: alertJob.chatId, message: `Error enqueuing alert: ${error.message}` });
+    }
+    return false;
+  }
 }
 
 /**

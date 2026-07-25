@@ -20,25 +20,25 @@ export class Logger {
     if (!fs.existsSync(logFile)) {
       fs.writeFileSync(logFile, '');
     }
-    fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
+    fs.appendFileSync(logFile, `${date} - | ChatId: ${log.chatId} | Message: ${log.message}\n`);
   }
 
   public static infoLog(log: Log) {
     const date = new Date().toISOString();
     const logFile = path.join(logPath, `info.log`);
-    fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
+    fs.appendFileSync(logFile, `${date} - | ChatId: ${log.chatId} | Message: ${log.message}\n`);
   }
 
   public static warnLog(log: Log) {
     const date = new Date().toISOString();
     const logFile = path.join(logPath, `warn.log`);
-    fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
+    fs.appendFileSync(logFile, `${date} - | ChatId: ${log.chatId} | Message: ${log.message}\n`);
   }
 
   public static debugLog(log: Log) {
     const date = new Date().toISOString();
     const logFile = path.join(logPath, `debug.log`);
-    fs.appendFileSync(logFile, `${date} - ${log.message}\n`);
+    fs.appendFileSync(logFile, `${date} - | ChatId: ${log.chatId} | Message: ${log.message}\n`);
   }
 
   public static jobsLog(log: Log) {

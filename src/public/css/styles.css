@@ -1452,6 +1452,38 @@ details.sidebar-group > *:not(summary) {
   display: block;
 }
 
+/* ======================================
+   WEB APP STYLES
+   ===================================== */
+
+.member-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.member-photo img {
+  max-width: 5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.revoke-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.member-revoke {
+  background-color: var(--accent-glow);
+  color: var(--text-primary);
+  font-size: large;
+  padding: 0.5rem;
+  border-radius: 2px;
+  margin: auto;
+}
+
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
@@ -1526,5 +1558,14 @@ details.sidebar-group > *:not(summary) {
 
   .btn {
     width: 100%;
+  }
+
+  /* ===========
+   Responsive Web App
+  =================== */
+  .member-info {
+    gap: 4px;
+    flex-wrap: wrap;
+    font-size: medium;
   }
 }

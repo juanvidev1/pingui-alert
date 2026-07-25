@@ -46,16 +46,78 @@ export class ApiController {
 
     // bot.api.sendMessage(data.chatId, `${data.title}\n${data.message}`);
 
-    await enqueueAlert({
+    const notified = await enqueueAlert({
       id: generateUniqueId(false),
       chatId: data.chatId,
       title: data.title || 'Alert',
       message: data.message
     });
 
-    await MetricsService.incrementSentAlertsCount();
+    if (!notified) {
+      Logger.errorLog({ chatId: Number(data.chatId), message: `Error sending alert ${requestId}` });
+      return c.json({ error: 'Error sending alert' }, 500);
+    }
+
+    await MetricsService.incrementSentAlertsCount(Number(data.chatId));
 
     return c.json({ message: 'Alert enqueued' });
+  }
+
+  static async alertMembers(c: Context) {
+    const { chatId, message, title }: any = await c.req.json();
+
+    const requestId = generateUniqueId(false);
+
+    if (!chatId) {
+      Logger.errorLog({ chatId: Number(requestId), message: 'Missing required fields on alertMembers endpoint' });
+      throw new Error('Chat ID is mandatory');
+    }
+
+    try {
+      // chatId is the owner chatId
+      const members = await IntegrationService.getIntegrationMembers(undefined, Number(chatId));
+      if (!members) {
+        throw new Error('Members not found');
+      }
+
+      const results = await Promise.all(
+        members.members.map(async (member) => {
+          Logger.infoLog({
+            chatId: Number(member.chatId),
+            message: 'Sending alert to member'
+          });
+
+          if (!member.activeMember) {
+            Logger.debugLog({
+              chatId: member.chatId,
+              message: 'Member is not active. Not notified'
+            });
+
+            return false;
+          }
+
+          return await enqueueAlert({
+            id: requestId,
+            chatId: member.chatId,
+            title: title || 'Alert',
+            message
+          });
+        })
+      );
+
+      const notifiedMembersCount = results.filter((result) => result === true).length;
+
+      return c.json({
+        message: 'Alert enqueued to members',
+        succesNotifications: notifiedMembersCount,
+        totalMembers: members?.members.length
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        Logger.errorLog({ chatId: Number(requestId), message: `Error sending alert to members: ${error.message}` });
+        c.json({ error: error.message }, 500);
+      }
+    }
   }
 
   static async createIntegration(c: Context) {
@@ -151,5 +213,68 @@ export class ApiController {
     }
 
     return c.json({ integration });
+  }
+
+  static async getIntegrationMembers(c: Context) {
+    try {
+      const integrationId = c.req.query('integrationId');
+      const chatId = c.req.query('chatId');
+
+      if (!integrationId && !chatId) {
+        throw new Error('Missing required fields on getIntegrationMembers endpoint');
+      }
+
+      if (!chatId) {
+        const integrationMembers = await IntegrationService.getIntegrationMembers(Number(integrationId));
+        return c.json({ integrationMembers });
+      } else if (!integrationId) {
+        const integrationMembers = await IntegrationService.getIntegrationMembers(undefined, Number(chatId));
+        return c.json({ integrationMembers });
+      } else {
+        return c.json({ integrationMembers: [] });
+      }
+    } catch (error) {
+      const requestId = generateUniqueId(false);
+      if (error instanceof Error) {
+        Logger.errorLog({
+          chatId: Number(requestId),
+          message: `Error on getIntegrationMembers endpoint: ${error.message}`
+        });
+        return c.json({ error: error.message }, 400);
+      }
+      return c.json({ error: 'Missing required fields' }, 400);
+    }
+  }
+
+  static async validateIntegrationOwner(c: Context) {
+    const chatId = Number(c.req.param('chatId'));
+    if (!chatId) {
+      return c.json({ error: 'Chat id is missing' }, 400);
+    }
+    return c.json({ valid: await IntegrationService.validateIntegrationOwner(chatId) });
+  }
+
+  static async changeActiveMember(c: Context) {
+    const { chatId, integrationId, activeMember }: any = await c.req.json();
+    if (!chatId || !integrationId) {
+      return c.json({ error: 'Chat id and integration id are required' }, 400);
+    }
+
+    if (Array.isArray(chatId)) {
+      const result = await IntegrationService.changeMemberStatus(chatId, false, integrationId);
+      if (!result) {
+        const chatIdString = chatId.join(' ');
+        Logger.errorLog({ chatId: Number(chatIdString), message: 'Error changing member status' });
+      }
+      return c.json({ changed: result });
+    }
+
+    const result = await IntegrationService.changeMemberStatus(Number(chatId), activeMember, integrationId);
+
+    if (!result) {
+      Logger.errorLog({ chatId, message: 'Error changing member status' });
+    }
+
+    return c.json({ changed: result });
   }
 }

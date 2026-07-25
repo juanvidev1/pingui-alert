@@ -1,4 +1,5 @@
-import { Integration } from '../db/models.js';
+import { Integration, IntegrationMember } from '../db/models.js';
+import { Logger } from '../logger/index.js';
 import jsonwebtoken from 'jsonwebtoken';
 
 export class IntegrationService {
@@ -163,6 +164,150 @@ export class IntegrationService {
     } catch (error) {
       console.error(error);
       throw error;
+    }
+  }
+
+  static async addMemberToIntegration(
+    integrationId: number | null,
+    memberChatId: number,
+    ownerChatId?: number | string
+  ) {
+    console.log('Parameters received:', { integrationId, memberChatId, ownerChatId });
+    Logger.debugLog({
+      chatId: memberChatId,
+      message: `Starting process for member ${memberChatId} in integration ${integrationId}`
+    });
+
+    try {
+      let integration = null;
+
+      if (integrationId !== null) {
+        console.log('Integration id');
+        integration = await Integration.findOne({
+          where: { id: integrationId }
+        });
+      } else if (ownerChatId !== undefined) {
+        console.log('Owner chatId');
+        integration = await Integration.findOne({
+          where: { chatId: ownerChatId }
+        });
+      } else {
+        console.log('Juanvi Owner query');
+        integration = await Integration.findOne({
+          where: { chatId: 1547430999 }
+        });
+      }
+
+      if (!integration) {
+        throw new Error('Integration not found');
+      }
+
+      const existingMember = await IntegrationMember.findOne({ where: { chatId: memberChatId } });
+
+      if (existingMember) {
+        throw new Error('Member already exists on this integration');
+      }
+
+      const integrationMember = await IntegrationMember.create({
+        integrationId: integration?.dataValues?.id || integrationId,
+        chatId: memberChatId
+      });
+
+      if (!integrationMember) {
+        throw new Error('Integration member not created');
+      }
+
+      return integrationMember?.dataValues;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Error:', error.message);
+        throw error;
+      }
+    }
+  }
+
+  static async getIntegrationMembers(integrationId?: number, ownerChatId?: number) {
+    try {
+      if (!integrationId && !ownerChatId) {
+        throw new Error('Integration ID or Owner Chat ID is required');
+      }
+
+      if (!integrationId && ownerChatId) {
+        const integrationMembers = await IntegrationMember.findAll({ where: { ownerChatId: ownerChatId.toString() } });
+
+        if (!integrationMembers) {
+          throw new Error('Integration not found');
+        }
+        const integrationId = integrationMembers[0]?.dataValues.integrationId;
+        const members = integrationMembers?.map((member) => member.dataValues);
+
+        if (!members || members.length === 0) {
+          throw new Error('No members found for this integration');
+        }
+        return { members, integrationId };
+      } else if (integrationId && !ownerChatId) {
+        const integrationMembers = await IntegrationMember.findAll({ where: { integrationId } });
+
+        if (!integrationMembers || integrationMembers.length === 0) {
+          throw new Error('No members found for this integration');
+        }
+
+        const members = integrationMembers?.map((member) => member.dataValues);
+
+        if (!members || members.length === 0) {
+          throw new Error('No members found for this integration');
+        }
+
+        return { members, integrationId };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  static async validateIntegrationOwner(chatId: string | number) {
+    const integration = await Integration.findOne({ where: { chatId: Number(chatId) } });
+    if (!integration) {
+      return false;
+    }
+    return integration?.dataValues?.status === 'active';
+  }
+
+  static async removeIntegrationMember(chatId: string | number): Promise<boolean> {
+    try {
+      const integrationMember = await IntegrationMember.destroy({ where: { chatId: Number(chatId) } });
+      return integrationMember > 0;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  static async changeMemberStatus(
+    chatId: number | Array<number>,
+    status: boolean,
+    integrationId?: number
+  ): Promise<boolean> {
+    try {
+      if (Array.isArray(chatId)) {
+        chatId.forEach(
+          async (id) => await IntegrationMember.update({ activeMember: status }, { where: { chatId: id } })
+        );
+        return true;
+      } else {
+        console.log('Changing member status for chatId:', chatId, 'to status:', status);
+        const integrationMember = await IntegrationMember.update(
+          { activeMember: status },
+          { where: { chatId: Number(chatId) } }
+        );
+        return integrationMember[0] > 0;
+      }
+    } catch (error) {
+      console.error(error);
+      return false;
     }
   }
 

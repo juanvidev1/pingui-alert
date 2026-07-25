@@ -27,6 +27,8 @@ app.get('/docs/es', WebController.esDocs);
 
 app.get('/metrics', WebController.metrics);
 
+app.get('/members', WebController.integrationMembers);
+
 app.route('/', apiRouter);
 
 export default app;

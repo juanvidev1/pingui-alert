@@ -1,3 +1,4 @@
+import { where } from 'sequelize';
 import { Metrics } from '../db/models.js';
 import { Logger } from '../logger/index.js';
 
@@ -48,7 +49,7 @@ export class MetricsService {
 
   static async incrementErrorsCount(chatId: number = 0) {
     try {
-      await Metrics.increment('totalErrors', { by: 1 });
+      await Metrics.increment('totalErrors', { by: 1, where: { date: new Date().toISOString().split('T')[0] } });
       return true;
     } catch (error) {
       Logger.errorLog({ chatId, message: 'Failed to increment errors count ' + error });

@@ -27,7 +27,7 @@
         <a href="/docs/es" class="nav-link" style="display: flex; align-items: center; gap: 0.25rem">
           <span style="font-size: 1.1em">🇪🇸</span> ES
         </a>
-        <a href="/metrics" class="nav-link">MMetrics</a>
+        <a href="/metrics" class="nav-link">Metrics</a>
       </div>
     </nav>
 
@@ -61,11 +61,18 @@
             <h3>API Reference</h3>
           </summary>
           <a href="#send-alert" class="sidebar-link">Send Alert</a>
+          <a href="#alert-members" class="sidebar-link">Alert Members</a>
           <a href="#create-integration" class="sidebar-link">Create Integration</a>
           <a href="#get-integration" class="sidebar-link">Get Integration</a>
-          <a href="#update-rate-limit" class="sidebar-link">Update Rate Limit</a>
           <a href="#revoke-integration" class="sidebar-link">Revoke Integration</a>
-          <a href="#check-quota" class="sidebar-link">Check Quota</a>
+          <a href="#integration-members" class="sidebar-link">Integration Members</a>
+          <a href="#change-member-status" class="sidebar-link">Change Member Status</a>
+        </details>
+        <details class="sidebar-group">
+          <summary>
+            <h3>Telegram Bot</h3>
+          </summary>
+          <a href="#bot-commands" class="sidebar-link">Commands Reference</a>
         </details>
         <details class="sidebar-group">
           <summary>
@@ -290,34 +297,6 @@ redis-cli LLEN pingui:queue:alerts</code></pre>
     }
   ]
 }</code></pre>
-        </section>loy your own Pingui Alert server and bot. This gives you full
-              control over rate limits and ensures dedicated resources.
-            </li>
-            <li>
-              <strong>Use for Critical Alerts Only:</strong> If using @PinguiAlertBot, implement filtering logic to send
-              only high-priority notifications (failures, errors, security events).
-            </li>
-            <li>
-              <strong>Implement Batching:</strong> Group multiple non-critical alerts into periodic summary messages
-              instead of sending individual notifications.
-            </li>
-          </ul>
-
-          <h3>Self-Hosting</h3>
-          <p>To self-host Pingui Alert:</p>
-          <pre><code>git clone https://github.com/juanvidev1/pingui-alert
-cd pingui-alert
-
-# Set your environment variables
-export BOT_TOKEN="your_telegram_bot_token"
-export JWT_SECRET="your_secret_key"
-export MAX_ALERTS=100  # Customize your daily limit
-
-# Install dependencies
-pnpm install
-
-# Run the server
-pnpm run dev</code></pre>
         </section>
 
         <!-- Production Usage -->
@@ -549,13 +528,178 @@ pnpm run dev</code></pre>
           </section>
         </details>
 
+        <!-- Alert Members -->
+        <details>
+          <summary id="alert-members">
+            <h2>Alert Members</h2>
+            <p>Send an alert to all active members of your integration.</p>
+          </summary>
+          <section>
+            <h2>Alert Members</h2>
+            <p>Sends an alert to all active members linked to your integration.</p>
+
+            <div class="endpoint-badge">POST /alert/members</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Your permanent JWT token.</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Required.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+  "chatId": 123456789,
+  "title": "Deployment Alert",
+  "message": "Production deployment failed."
+}</code></pre>
+
+            <h3>Response</h3>
+            <pre><code>{
+  "message": "Alert enqueued to members",
+  "succesNotifications": 3,
+  "totalMembers": 4
+}</code></pre>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://pingui-alert.dev/api/alert/members \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"chatId": 123456789, "title": "Deployment Alert", "message": "Production deployment failed."}'</code></pre>
+          </section>
+        </details>
+
+        <!-- Integration Members -->
+        <details>
+          <summary id="integration-members">
+            <h2>Get Integration Members</h2>
+            <p>Retrieve all members linked to an integration.</p>
+          </summary>
+          <section>
+            <h2>Get Integration Members</h2>
+
+            <div
+              class="endpoint-badge"
+              style="color: #3b82f6; background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3)"
+            >
+              GET /integration-members?chatId=:chatId
+            </div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Your JWT token (API Key).</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Query Parameters</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>chatId</code></td>
+                  <td>Your Telegram chat ID (owner).</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X GET "https://pingui-alert.dev/api/integration-members?chatId=123456789" \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+          </section>
+        </details>
+
+        <!-- Change Member Status -->
+        <details>
+          <summary id="change-member-status">
+            <h2>Change Member Status</h2>
+            <p>Enable or disable a member from receiving alerts.</p>
+          </summary>
+          <section>
+            <h2>Change Member Status</h2>
+
+            <div class="endpoint-badge">POST /change-member-status</div>
+
+            <h3>Headers</h3>
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Header</th>
+                  <th>Value</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Authorization</code></td>
+                  <td><code>Bearer &lt;YOUR_API_KEY&gt;</code></td>
+                  <td>Your JWT token (API Key).</td>
+                </tr>
+                <tr>
+                  <td><code>Content-Type</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Required.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Body</h3>
+            <pre><code>{
+  "chatId": 987654321,
+  "integrationId": 1,
+  "activeMember": false
+}</code></pre>
+
+            <h3>Example (cURL)</h3>
+            <pre><code>curl -X POST https://pingui-alert.dev/api/change-member-status \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"chatId": 987654321, "integrationId": 1, "activeMember": false}'</code></pre>
+          </section>
+        </details>
+
         <!-- Revoke Integration -->
-         <details>
+        <details>
           <summary id="revoke-integration">
             <h2>Revoke Integration</h2>
             <p>Revoke (deactivate) an integration.</p>
           </summary>
           <section>
+            <h2>Revoke Integration</h2>
+            <p>Revoke (deactivate) an existing integration.</p>
+
             <div class="endpoint-badge">POST /revokeIntegration</div>
   
             <h3>Headers</h3>
@@ -593,6 +737,115 @@ pnpm run dev</code></pre>
     -d '{"chatId": 123456789}'</code></pre>
           </section>
          </details>
+
+        <section id="bot-commands">
+          <h2>Telegram Bot Commands</h2>
+          <p>All interactions with Pingui Alert start from the Telegram bot. Below is the full reference for available commands.</p>
+
+          <div class="info-box">
+            <strong>📌 Note for members:</strong> If you are going to join an integration as a member (not the owner), you must run <code>/start</code> on the bot first so the system can register your chat ID before you can receive alerts.
+          </div>
+
+          <h3>General Commands</h3>
+
+          <details>
+            <summary id="cmd-help">
+              <h4>/help</h4>
+              <p>Returns a link to the official documentation.</p>
+            </summary>
+            <section>
+              <h4>/help</h4>
+              <p>Returns a link to the official documentation.</p>
+              <pre><code>/help</code></pre>
+              <p><strong>Response:</strong> A message with the link to <code>https://pingui-alert.dev/docs</code>.</p>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-get-me">
+              <h4>/get_me</h4>
+              <p>Returns your Telegram chat ID. You will need this to send alerts via the API.</p>
+            </summary>
+            <section>
+              <h4>/get_me</h4>
+              <p>Returns your Telegram chat ID. You will need this value as the <code>chatId</code> field in all API requests.</p>
+              <pre><code>/get_me</code></pre>
+              <p><strong>Response:</strong> <code>Your user id is: 123456789</code></p>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-temporal-token">
+              <h4>/temporal_token</h4>
+              <p>Generates a short-lived token (5 min) to create your first integration.</p>
+            </summary>
+            <section>
+              <h4>/temporal_token</h4>
+              <p>Generates a temporary JWT token valid for 5 minutes. Use it immediately with the <code>POST /createIntegration</code> endpoint to get your permanent API key.</p>
+              <pre><code>/temporal_token</code></pre>
+              <p><strong>Response:</strong> <code>This is your temporal token, it will expire in 5 minutes: &lt;token&gt;</code></p>
+            </section>
+          </details>
+
+          <h3>Member Commands</h3>
+
+          <details>
+            <summary id="cmd-join">
+              <h4>/join &lt;code&gt;</h4>
+              <p>Join an integration as a member using an invite code.</p>
+            </summary>
+            <section>
+              <h4>/join &lt;code&gt;</h4>
+              <p>Joins an existing integration as a member. The invite code must be provided by the integration owner via <code>/create_invite</code>.</p>
+              <div class="info-box" style="background: rgba(251, 146, 60, 0.1); border-left-color: #fb923c">
+                <strong>⚠️ Prerequisite:</strong> You must have run <code>/start</code> on the bot at least once before using this command, otherwise the system won't be able to register you.
+              </div>
+              <pre><code>/join ABC123</code></pre>
+              <p><strong>Response:</strong> <code>Joined successfully</code></p>
+            </section>
+          </details>
+
+          <h3>Owner-Only Commands</h3>
+          <p>These commands require an active integration and are restricted to the integration owner.</p>
+
+          <details>
+            <summary id="cmd-join-owner">
+              <h4>/join_owner</h4>
+              <p>Adds yourself (the owner) as a member of your own integration.</p>
+            </summary>
+            <section>
+              <h4>/join_owner</h4>
+              <p>Registers the integration owner as a member so they also receive alerts sent to <code>POST /alert/members</code>.</p>
+              <pre><code>/join_owner</code></pre>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-create-invite">
+              <h4>/create_invite</h4>
+              <p>Generates an invite code to share with people you want to add as members.</p>
+            </summary>
+            <section>
+              <h4>/create_invite</h4>
+              <p>Creates a new invite code for your integration. Share this code with anyone you want to add as a member — they must use <code>/join &lt;code&gt;</code> to join.</p>
+              <pre><code>/create_invite</code></pre>
+              <p><strong>Response:</strong> <code>The code for joining the integration alerts is ABC123</code></p>
+            </section>
+          </details>
+
+          <details>
+            <summary id="cmd-get-members">
+              <h4>/get_members</h4>
+              <p>Opens a panel to view and manage your integration members.</p>
+            </summary>
+            <section>
+              <h4>/get_members</h4>
+              <p>Returns a list of all members in your integration and opens a web panel to enable or disable them.</p>
+              <pre><code>/get_members</code></pre>
+              <p><strong>Response:</strong> A message with an inline button to open the members management panel.</p>
+            </section>
+          </details>
+        </section>
 
         <section id="npm-package">
           <h2>NPM Package</h2>
