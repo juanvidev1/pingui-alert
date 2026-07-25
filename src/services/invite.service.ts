@@ -1,5 +1,5 @@
-import { IntegrationInvite, Integration } from '../db/models';
-import { generateRandomCode, hashCode, verifyCodeHash } from '../utils';
+import { IntegrationInvite, Integration } from '../db/models.js';
+import { generateRandomCode, hashCode, verifyCodeHash } from '../utils/index.js';
 
 export class InviteService {
   static async createInvite(

@@ -4,7 +4,7 @@ import { verifyJwtToken, validateRateLimit, validateStatus, verifyTemporalToken 
 
 // Validators
 import { zValidator } from '@hono/zod-validator';
-import { memberActiveUpdateSchema } from '../../validators';
+import { memberActiveUpdateSchema } from '../../validators/index.js';
 
 const apiRouter = new Hono().basePath('/api');
 

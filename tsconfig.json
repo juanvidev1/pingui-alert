@@ -9,7 +9,7 @@
     // See also https://aka.ms/tsconfig/module
     "module": "preserve",
     "target": "ES2022",
-    "moduleResolution": "bundler",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "types": [],
     // For nodejs:

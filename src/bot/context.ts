@@ -1,5 +1,5 @@
 import { Context } from 'grammy';
-import type { Integration } from '../types';
+import type { Integration } from '../types/index.js';
 
 export interface BotContext extends Context {
   auth?: {

@@ -1,6 +1,6 @@
-import { IntegrationService } from '../services/integration.service';
-import type { BotContext } from '../bot/context';
-import { Logger } from '../logger';
+import { IntegrationService } from '../services/integration.service.js';
+import type { BotContext } from '../bot/context.js';
+import { Logger } from '../logger/index.js';
 
 export const setIntegrationIdInCtx = async (ctx: BotContext, next: any): Promise<void> => {
   Logger.infoLog({ chatId: ctx.chat?.id || 0, message: `Starting search of integration with chat ${ctx?.chat?.id}` });

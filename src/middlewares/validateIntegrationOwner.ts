@@ -1,5 +1,5 @@
-import { IntegrationService } from '../services/integration.service';
-import type { BotContext } from '../bot/context';
+import { IntegrationService } from '../services/integration.service.js';
+import type { BotContext } from '../bot/context.js';
 
 export const validateIntegrationOwner = async (ctx: BotContext, next: any): Promise<void> => {
   try {

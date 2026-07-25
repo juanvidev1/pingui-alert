@@ -1,2 +1,2 @@
-export { integrationValidator } from './integration.validator';
-export { memberActiveUpdateSchema } from './member.validator';
+export { integrationValidator } from './integration.validator.js';
+export { memberActiveUpdateSchema } from './member.validator.js';
