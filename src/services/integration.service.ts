@@ -210,7 +210,8 @@ export class IntegrationService {
 
       const integrationMember = await IntegrationMember.create({
         integrationId: integration?.dataValues?.id || integrationId,
-        chatId: memberChatId
+        chatId: memberChatId,
+        ownerChatId: ownerChatId ?? integration?.dataValues?.chatId
       });
 
       if (!integrationMember) {
