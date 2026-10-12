@@ -10,7 +10,7 @@ export const validateStatus = async (c: Context, next: Next) => {
     return c.json({ error: 'Missing chat id' }, 400);
   }
   const integration = await IntegrationService.getIntegration(Number(chatId));
-  if (!integration) {
+  if (!integration || (integration as any).error) {
     Logger.errorLog({ chatId: chatId, message: 'Integration not found' });
     return c.json({ error: 'Integration not found' }, 404);
   }

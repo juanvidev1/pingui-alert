@@ -12,7 +12,7 @@ export const validateRateLimit = async (c: Context, next: Next) => {
     return c.json({ error: 'Missing chat id' }, 400);
   }
   const integration = await IntegrationService.getIntegration(Number(chatId));
-  if (!integration) {
+  if (!integration || (integration as any).error) {
     const requestId = generateUniqueId(false);
     const hashedChatId = hashChatId(Number(chatId));
     Logger.errorLog({ chatId: Number(requestId), message: `Integration not found, chatId: ${hashedChatId}` });
