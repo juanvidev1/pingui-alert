@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (tg) {
     tg.ready();
     tg.expand();
-    console.log('Init data', tg?.initDataRaw);
+    console.log('Init data', tg?.initData);
     tg.MainButton.show();
     tg.MainButton.setText('Close');
     tg.MainButton.onClick(() => {
@@ -90,12 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  let integrationId = null;
   const memberCards = document.querySelectorAll('.member');
   if (memberCards && memberCards.length > 0) {
     memberCards.forEach((card) => {
       const chatId = card.dataset.chatId;
-      const integrationId = card.dataset.integrationId;
+      const integrationIdCard = card.dataset.integrationId;
       const revokeBtn = card.querySelector(`#revoke-${chatId}`);
       if (revokeBtn) {
         revokeBtn.addEventListener('click', async () => {
@@ -139,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 const dataObj = {
                   action: 'revoke',
-                  integrationId,
+                  integrationIdCard,
                   chatIds: membersToRevoke.join(',')
                 };
                 console.log('Sending data back to bot:', dataObj);
