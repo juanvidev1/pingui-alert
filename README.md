@@ -63,6 +63,9 @@ NOTIFICATION_EMAIL=noreply@your-domain.com
 
 # Frontend URL
 FRONTEND_URL=http://localhost:5173
+
+# Admin chat id (exento de rate limit y límite de rate)
+ADMIN_CHAT_ID=1547430999
 ```
 
 ## Running the Application

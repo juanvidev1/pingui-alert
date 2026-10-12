@@ -1,6 +1,7 @@
 import { Integration, IntegrationMember } from '../db/models.js';
 import { Logger } from '../logger/index.js';
 import jsonwebtoken from 'jsonwebtoken';
+import config from '../config/index.js';
 
 export class IntegrationService {
   static async registerUserIntegration(chatId: number, tokenHash?: string) {
@@ -168,7 +169,7 @@ export class IntegrationService {
         throw new Error('Integration not found');
       }
 
-      if (rateLimit && rateLimit > 10 && chatId !== 1547430999) {
+      if (rateLimit && rateLimit > 10 && chatId !== config.adminChatId) {
         throw new Error('Rate limit cannot be greater than 10 on public bot');
       }
 
@@ -244,9 +245,9 @@ export class IntegrationService {
           where: { chatId: ownerChatId }
         });
       } else {
-        Logger.debugLog({ chatId: 1547430999, message: 'Juanvi Owner query' });
+        Logger.debugLog({ chatId: config.adminChatId, message: 'Admin owner query' });
         integration = await Integration.findOne({
-          where: { chatId: 1547430999 }
+          where: { chatId: config.adminChatId }
         });
       }
 

@@ -3,6 +3,7 @@ import { getConnInfo } from '@hono/node-server/conninfo';
 import { checkLimit, pruneExpired } from '../services/rateLimit.service.js';
 import { Logger } from '../logger/index.js';
 import { hashCode } from '../utils/index.js';
+import config from '../config/index.js';
 
 type RateLimitEntry = { count: number; lastReset: number };
 
@@ -18,8 +19,7 @@ const WINDOW_MS = 60 * 1000; // 1 minuto
 const MAX_REQ_TOKEN = 120; // más alto para integraciones reales
 const MAX_REQ_IP = 40; // más bajo para endpoint público
 
-// TODO: mover a variable de entorno (ADMIN_CHAT_ID)
-const ADMIN_CHAT_ID = 1547430999;
+const ADMIN_CHAT_ID = config.adminChatId;
 
 function getClientIp(c: Context): string {
   const forwarded = c.req.header('x-forwarded-for');

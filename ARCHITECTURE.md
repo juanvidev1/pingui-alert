@@ -194,6 +194,7 @@ Logger.infoLog({
 BOT_TOKEN=telegram_bot_token
 JWT_SECRET=jwt_signing_key
 REDIS_URL=redis://localhost:6379
+ADMIN_CHAT_ID=1547430999
 ```
 
 ### Startup Process
