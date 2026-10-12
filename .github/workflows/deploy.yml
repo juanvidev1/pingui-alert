@@ -37,8 +37,14 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e
             cd /var/www/pingui-alert
-            git pull origin main
-            /home/${{ secrets.VPS_USER }}/.local/share/pnpm/pnpm install
-            /home/${{ secrets.VPS_USER }}/.local/share/pnpm/pnpm run build
-            /home/${{ secrets.VPS_USER }}/.nvm/versions/node/v25.4.0/bin/pm2 restart pingui-alert || pm2 start ecosystem.config.js --env production
+            git pull --ff-only origin main
+            export NVM_DIR="$HOME/.nvm"
+            NODE_BIN="$(ls -d "$NVM_DIR"/versions/node/*/bin 2>/dev/null | sort -V | tail -1)"
+            export PATH="$NODE_BIN:$HOME/.local/share/pnpm/bin:$PATH"
+            pnpm install --frozen-lockfile
+            pnpm migration:up
+            pnpm run build
+            pm2 restart ecosystem.config.cjs --env production --update-env || pm2 start ecosystem.config.cjs --env production
+            pm2 save
