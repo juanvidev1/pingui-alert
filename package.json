@@ -9,10 +9,10 @@
     "build": "pnpm exec tsc",
     "start": "pnpm exec node dist/index.js",
     "test": "pnpm exec vitest",
-    "migration:create": "sequelize-cli migration:generate --name",
-    "migration:up": "sequelize-cli db:migrate",
-    "migration:down": "sequelize-cli db:migrate:undo",
-    "migration:status": "sequelize-cli db:migrate:status"
+    "migration:create": "sequelize-cli migration:generate --options-path .sequelizerc.cjs --name",
+    "migration:up": "sequelize-cli db:migrate --options-path .sequelizerc.cjs",
+    "migration:down": "sequelize-cli db:migrate:undo --options-path .sequelizerc.cjs",
+    "migration:status": "sequelize-cli db:migrate:status --options-path .sequelizerc.cjs"
   },
   "keywords": [],
   "author": "",
