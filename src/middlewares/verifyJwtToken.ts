@@ -11,6 +11,10 @@ export const verifyJwtToken = async (c: Context, next: Next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
+    if (decoded && typeof decoded === 'object' && 'chatId' in decoded) {
+      c.set('jwtChatId', Number((decoded as jwt.JwtPayload).chatId));
+    }
+
     await next();
   } catch (error) {
     console.error(error);

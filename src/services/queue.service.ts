@@ -8,6 +8,7 @@ const LOCK_KEY = 'pingui:queue:processing';
 
 const SEND_DELAY_MS = 1000; // 1 msg / segundo (safe para Telegram)
 const MAX_QUEUE_SIZE = 500;
+const MAX_ATTEMPTS = 3;
 
 export interface AlertJob {
   id: string | number;
@@ -15,6 +16,7 @@ export interface AlertJob {
   title: string;
   message: string;
   app?: string;
+  attempts?: number;
 }
 
 const redis = createClient({
@@ -84,13 +86,34 @@ export async function startQueueWorker() {
         Logger.infoLog({ chatId: job.chatId, message: `Sending alert ${job.id} to telegram`, app: 'redis_queue' });
         await bot.api.sendMessage(job.chatId, message);
       } catch (err) {
+        const attempts = (job.attempts ?? 0) + 1;
         console.error('[queue] telegram send failed', err);
-        Logger.errorLog({
-          chatId: job.chatId,
-          message: `Failed to send alert ${job.id} to telegram`,
-          app: 'redis_queue'
-        });
-        // best-effort: NO retry por ahora
+
+        if (attempts < MAX_ATTEMPTS) {
+          job.attempts = attempts;
+          try {
+            await redis.lPush(QUEUE_KEY, JSON.stringify(job));
+            Logger.errorLog({
+              chatId: job.chatId,
+              message: `Failed to send alert ${job.id}, requeued (attempt ${attempts}/${MAX_ATTEMPTS})`,
+              app: 'redis_queue'
+            });
+          } catch (requeueError) {
+            Logger.errorLog({
+              chatId: job.chatId,
+              message: `Failed to requeue alert ${job.id}: ${
+                requeueError instanceof Error ? requeueError.message : String(requeueError)
+              }`,
+              app: 'redis_queue'
+            });
+          }
+        } else {
+          Logger.errorLog({
+            chatId: job.chatId,
+            message: `Failed to send alert ${job.id} after ${attempts} attempts, dropping`,
+            app: 'redis_queue'
+          });
+        }
       }
 
       await redis.del(LOCK_KEY);

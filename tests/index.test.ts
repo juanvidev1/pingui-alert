@@ -133,6 +133,69 @@ describe('Hybrid rate limit on alert endpoints', () => {
   });
 });
 
+// Tests para validación de ownership (jwtChatId), body inválido y errores del servicio.
+describe('Security & error handling on POST /api/alert', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetRateLimitStore();
+    mockIntegrationService.changeRateLimit.mockResolvedValue({ id: 1, chatId: 1547430999 });
+    mockQueueService.enqueueAlert.mockResolvedValue(true);
+  });
+
+  it('rejects a chatId that does not belong to the token', async () => {
+    const res = await app.request('/api/alert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test-token'
+      },
+      body: JSON.stringify({
+        title: 'Alerta',
+        message: 'Mensaje',
+        chatId: 999999999
+      })
+    });
+
+    expect(res.status).toBe(403);
+    const json = await res.json();
+    expect(json.error).toBe('Forbidden');
+  });
+
+  it('returns 400 for an invalid JSON body', async () => {
+    const res = await app.request('/api/alert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test-token'
+      },
+      body: '{invalid json'
+    });
+
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toBe('Invalid JSON body');
+  });
+
+  it('returns 500 when the integration service reports an error', async () => {
+    mockIntegrationService.changeRateLimit.mockResolvedValue({ error: 'Integration not found' });
+
+    const res = await app.request('/api/alert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test-token'
+      },
+      body: JSON.stringify({
+        title: 'Alerta',
+        message: 'Mensaje',
+        chatId: 1547430999
+      })
+    });
+
+    expect(res.status).toBe(500);
+  });
+});
+
 // Test for getting integration details. Has mocked integration id and chat id.
 describe('GET /api/integrations/:chatId', () => {
   beforeEach(() => {
