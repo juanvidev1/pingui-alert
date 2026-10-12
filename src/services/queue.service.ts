@@ -27,25 +27,23 @@ redis.on('error', (err) => {
 });
 
 export async function enqueueAlert(alertJob: AlertJob) {
-  const queueSize = await redis.lLen(QUEUE_KEY);
-
   try {
+    const queueSize = await redis.lLen(QUEUE_KEY);
+
     if (queueSize >= MAX_QUEUE_SIZE) {
       Logger.errorLog({ chatId: alertJob.chatId, message: 'Queue is full', app: 'redis_queue' });
-      throw new Error('Queue is full');
+      return false;
     }
 
     await redis.lPush(QUEUE_KEY, JSON.stringify(alertJob));
     Logger.infoLog({ chatId: alertJob.chatId, message: 'Alert enqueued', app: 'redis_queue' });
     return true;
   } catch (error) {
-    if (error instanceof Error) {
-      Logger.errorLog({
-        chatId: alertJob.chatId,
-        message: `Error enqueuing alert: ${error.message}`,
-        app: 'redis_queue'
-      });
-    }
+    Logger.errorLog({
+      chatId: alertJob.chatId,
+      message: `Error enqueuing alert: ${error instanceof Error ? error.message : String(error)}`,
+      app: 'redis_queue'
+    });
     return false;
   }
 }
@@ -109,4 +107,12 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-await redis.connect();
+// No bloquear el arranque ni tumbar el proceso si Redis no responde:
+// el cliente reintenta la conexión y los comandos se encolan.
+redis.connect().catch((error) => {
+  Logger.errorLog({
+    chatId: 0,
+    message: `Redis initial connection failed: ${error instanceof Error ? error.message : String(error)}`,
+    app: 'redis_queue'
+  });
+});
