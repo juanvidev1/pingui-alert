@@ -139,7 +139,7 @@ protectedComposer.command('get_members', validateIntegrationOwner, async (ctx) =
   const chatId = ctx.chat.id;
   const keyboard = (data: unknown) => {
     return new Keyboard()
-      .webApp('Administrar miembros', `https://502f-181-32-23-39.ngrok-free.app/members?data=${data}&chatId=${chatId}`)
+      .webApp('Administrar miembros', `${config.frontendUrl}/members?data=${data}&chatId=${chatId}`)
       .resized();
   };
 

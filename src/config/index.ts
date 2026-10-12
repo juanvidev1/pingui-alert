@@ -11,5 +11,7 @@ export default {
   dbStorage: process.env.DB_STORAGE,
   backupRoute: process.env.DB_BACKUP_PATH,
   dbStoragePath: process.env.DB_STORAGE_PATH,
-  dbUrl: process.env.DB_URL || ''
+  dbUrl: process.env.DB_URL || '',
+  port: Number(process.env.PORT ?? 3035),
+  frontendUrl: (process.env.FRONTEND_URL ?? 'http://localhost:5173').replace(/\/$/, '')
 };
