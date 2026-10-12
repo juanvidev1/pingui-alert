@@ -40,6 +40,7 @@ jobs:
           script: |
             set -e
             cd /var/www/pingui-alert
+            export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/github_deploy_ci -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
             git pull --ff-only origin main
             export NVM_DIR="$HOME/.nvm"
             NODE_BIN="$(ls -d "$NVM_DIR"/versions/node/*/bin 2>/dev/null | sort -V | tail -1)"
