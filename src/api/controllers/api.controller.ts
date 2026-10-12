@@ -22,13 +22,22 @@ export class ApiController {
     return c.json({ token: tempTokenData });
   }
 
+  private static notify(chatId: unknown, message: string) {
+    void bot.api.sendMessage(Number(chatId), message).catch((error) => {
+      Logger.errorLog({
+        chatId: Number(chatId),
+        message: `Failed to send notification to chat: ${error instanceof Error ? error.message : String(error)}`
+      });
+    });
+  }
+
   static async alert(c: Context) {
     const data: any = await c.req.json();
 
     const requestId = generateUniqueId(true);
     if (!data.message || !data.chatId) {
       Logger.errorLog({ chatId: Number(requestId), message: 'Missing required fields' });
-      bot.api.sendMessage(
+      ApiController.notify(
         data.chatId,
         'There was a problem sendig the alert because all the required fields are not present. See the api reference for more information'
       );
@@ -36,15 +45,27 @@ export class ApiController {
       return c.json({ error: 'Missing required fields' }, 400);
     }
 
+    const jwtChatId = c.get('jwtChatId');
+    if (jwtChatId !== undefined && Number(data.chatId) !== Number(jwtChatId)) {
+      Logger.errorLog({ chatId: Number(requestId), message: 'Forbidden: chatId does not match token' });
+      return c.json({ error: 'Forbidden' }, 403);
+    }
+
     const integration = await IntegrationService.changeRateLimit(data.chatId);
 
     if (!integration) {
       Logger.errorLog({ chatId: Number(requestId), message: 'Integration not found' });
-      bot.api.sendMessage(data.chatId, 'There was a problem sendig the alert because the integration was not found');
+      ApiController.notify(data.chatId, 'There was a problem sendig the alert because the integration was not found');
       return c.json({ error: 'Integration not found' }, 404);
     }
 
-    // bot.api.sendMessage(data.chatId, `${data.title}\n${data.message}`);
+    if ((integration as any).error) {
+      Logger.errorLog({
+        chatId: Number(requestId),
+        message: `Error changing rate limit: ${(integration as any).error}`
+      });
+      return c.json({ error: 'Error processing alert' }, 500);
+    }
 
     const notified = await enqueueAlert({
       id: generateUniqueId(false),
@@ -68,12 +89,18 @@ export class ApiController {
 
     const requestId = generateUniqueId(false);
 
-    if (!chatId) {
-      Logger.errorLog({ chatId: Number(requestId), message: 'Missing required fields on alertMembers endpoint' });
-      throw new Error('Chat ID is mandatory');
-    }
-
     try {
+      if (!chatId) {
+        Logger.errorLog({ chatId: Number(requestId), message: 'Missing required fields on alertMembers endpoint' });
+        return c.json({ error: 'Chat ID is mandatory' }, 400);
+      }
+
+      const jwtChatId = c.get('jwtChatId');
+      if (jwtChatId !== undefined && Number(chatId) !== Number(jwtChatId)) {
+        Logger.errorLog({ chatId: Number(requestId), message: 'Forbidden: chatId does not match token' });
+        return c.json({ error: 'Forbidden' }, 403);
+      }
+
       // chatId is the owner chatId
       const members = await IntegrationService.getIntegrationMembers(undefined, Number(chatId));
       if (!members) {
@@ -113,10 +140,9 @@ export class ApiController {
         totalMembers: members?.members.length
       });
     } catch (error) {
-      if (error instanceof Error) {
-        Logger.errorLog({ chatId: Number(requestId), message: `Error sending alert to members: ${error.message}` });
-        c.json({ error: error.message }, 500);
-      }
+      const errorMessage = error instanceof Error ? error.message : 'Error sending alert to members';
+      Logger.errorLog({ chatId: Number(requestId), message: `Error sending alert to members: ${errorMessage}` });
+      return c.json({ error: errorMessage }, 500);
     }
   }
 

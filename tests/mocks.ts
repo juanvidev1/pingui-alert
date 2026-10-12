@@ -3,7 +3,10 @@ import { vi } from 'vitest';
 
 // Middlewares mock
 vi.mock('../src/middlewares/index.js', () => ({
-  verifyJwtToken: vi.fn((c, next) => next()),
+  verifyJwtToken: vi.fn((c, next) => {
+    c.set('jwtChatId', 1547430999);
+    return next();
+  }),
   verifyTemporalToken: vi.fn((c, next) => next()),
   validateRateLimit: vi.fn((c, next) => next()),
   validateStatus: vi.fn((c, next) => next())
@@ -24,7 +27,7 @@ export const mockBot = {
   start: vi.fn(),
   command: vi.fn(),
   api: {
-    sendMessage: vi.fn()
+    sendMessage: vi.fn(async () => {})
   }
 };
 
