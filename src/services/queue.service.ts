@@ -14,6 +14,7 @@ export interface AlertJob {
   chatId: number;
   title: string;
   message: string;
+  app?: string;
 }
 
 const redis = createClient({
@@ -22,6 +23,7 @@ const redis = createClient({
 
 redis.on('error', (err) => {
   console.error('[redis]', err);
+  Logger.errorLog({ chatId: 0, message: `Redis error: ${err.message}`, app: 'redis_queue' });
 });
 
 export async function enqueueAlert(alertJob: AlertJob) {
@@ -29,16 +31,20 @@ export async function enqueueAlert(alertJob: AlertJob) {
 
   try {
     if (queueSize >= MAX_QUEUE_SIZE) {
-      Logger.errorLog({ chatId: alertJob.chatId, message: 'Queue is full' });
+      Logger.errorLog({ chatId: alertJob.chatId, message: 'Queue is full', app: 'redis_queue' });
       throw new Error('Queue is full');
     }
 
     await redis.lPush(QUEUE_KEY, JSON.stringify(alertJob));
-    Logger.infoLog({ chatId: alertJob.chatId, message: 'Alert enqueued' });
+    Logger.infoLog({ chatId: alertJob.chatId, message: 'Alert enqueued', app: 'redis_queue' });
     return true;
   } catch (error) {
     if (error instanceof Error) {
-      Logger.errorLog({ chatId: alertJob.chatId, message: `Error enqueuing alert: ${error.message}` });
+      Logger.errorLog({
+        chatId: alertJob.chatId,
+        message: `Error enqueuing alert: ${error.message}`,
+        app: 'redis_queue'
+      });
     }
     return false;
   }
@@ -50,7 +56,7 @@ export async function enqueueAlert(alertJob: AlertJob) {
 export async function startQueueWorker() {
   const requestId = generateUniqueId(false);
   const date = new Date().toISOString();
-  Logger.infoLog({ chatId: 0, message: `Queue worker started at ${date}` });
+  Logger.infoLog({ chatId: 0, message: `Queue worker started at ${date}`, app: 'redis_queue' });
 
   while (true) {
     try {
@@ -77,11 +83,15 @@ export async function startQueueWorker() {
 
       try {
         const message = job.title ? `${job.title}\n${job.message}` : job.message;
-        Logger.infoLog({ chatId: job.chatId, message: `Sending alert ${job.id} to telegram` });
+        Logger.infoLog({ chatId: job.chatId, message: `Sending alert ${job.id} to telegram`, app: 'redis_queue' });
         await bot.api.sendMessage(job.chatId, message);
       } catch (err) {
         console.error('[queue] telegram send failed', err);
-        Logger.errorLog({ chatId: job.chatId, message: `Failed to send alert ${job.id} to telegram` });
+        Logger.errorLog({
+          chatId: job.chatId,
+          message: `Failed to send alert ${job.id} to telegram`,
+          app: 'redis_queue'
+        });
         // best-effort: NO retry por ahora
       }
 
@@ -89,7 +99,7 @@ export async function startQueueWorker() {
       await sleep(SEND_DELAY_MS);
     } catch (err) {
       console.error('[queue] worker error', err);
-      Logger.errorLog({ chatId: 0, message: `Queue worker error` });
+      Logger.errorLog({ chatId: 0, message: `Queue worker error`, app: 'redis_queue' });
       await sleep(1000);
     }
   }

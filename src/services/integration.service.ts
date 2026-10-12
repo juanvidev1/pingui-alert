@@ -21,8 +21,16 @@ export class IntegrationService {
 
       return fiirstIntegration?.dataValues;
     } catch (error) {
-      console.error(error);
-      throw error;
+      Logger.errorLog({ chatId, message: `Error on registerUserIntegration method: ${error}` });
+      if (error instanceof Error) {
+        return {
+          error: error.message || 'There was an error registering the user integration'
+        };
+      } else {
+        return {
+          error: 'There was an error registering the user integration'
+        };
+      }
     }
   }
 
@@ -50,8 +58,16 @@ export class IntegrationService {
 
       return integration?.dataValues;
     } catch (error) {
-      console.error(error);
-      throw error;
+      Logger.errorLog({ chatId, message: `Error on createIntegration method: ${error}` });
+      if (error instanceof Error) {
+        return {
+          error: error.message || 'There was an error creating the integration'
+        };
+      } else {
+        return {
+          error: 'There was an error creating the integration'
+        };
+      }
     }
   }
 
@@ -84,8 +100,16 @@ export class IntegrationService {
 
       return temporalIntegration?.dataValues?.tokenHash;
     } catch (error) {
-      console.error(error);
-      throw error;
+      Logger.errorLog({ chatId, message: `Error on createTemporalToken method: ${error}` });
+      if (error instanceof Error) {
+        return {
+          error: error.message || 'There was an error creating the temporal token'
+        };
+      } else {
+        return {
+          error: 'There was an error creating the temporal token'
+        };
+      }
     }
   }
 
@@ -101,8 +125,16 @@ export class IntegrationService {
       });
       return integration?.dataValues;
     } catch (error) {
-      console.error(error);
-      throw error;
+      Logger.errorLog({ chatId, message: `Error on updateToken method: ${error}` });
+      if (error instanceof Error) {
+        return {
+          error: error.message || 'There was an error updating the token'
+        };
+      } else {
+        return {
+          error: 'There was an error updating the token'
+        };
+      }
     }
   }
 
@@ -112,7 +144,7 @@ export class IntegrationService {
 
       return integrations?.map((integration) => integration.dataValues);
     } catch (error) {
-      console.error(error);
+      Logger.errorLog({ chatId, message: `Error on getAllUserIntegrations method: ${error}` });
       return { error: 'Integrations not found' };
     }
   }
@@ -123,7 +155,7 @@ export class IntegrationService {
 
       return integration?.dataValues;
     } catch (error) {
-      console.error(error);
+      Logger.errorLog({ chatId, message: `Error on getIntegration method: ${error}` });
       return { error: 'Integration not found' };
     }
   }
@@ -131,11 +163,12 @@ export class IntegrationService {
   static async changeRateLimit(chatId: number, rateLimit?: number) {
     try {
       const integration = await Integration.findOne({ where: { chatId } });
+      Logger.debugLog({ chatId, message: `Current integration data: ${JSON.stringify(integration?.dataValues)}` });
       if (!integration) {
         throw new Error('Integration not found');
       }
 
-      if (rateLimit && rateLimit > 10) {
+      if (rateLimit && rateLimit > 10 && chatId !== 1547430999) {
         throw new Error('Rate limit cannot be greater than 10 on public bot');
       }
 
@@ -145,8 +178,16 @@ export class IntegrationService {
       });
       return integration?.dataValues;
     } catch (error) {
-      console.error(error);
-      throw error;
+      Logger.errorLog({ chatId, message: `Error on changeRateLimit method: ${error}` });
+      if (error instanceof Error) {
+        return {
+          error: error.message || 'There was an error changing the rate limit'
+        };
+      } else {
+        return {
+          error: 'There was an error changing the rate limit'
+        };
+      }
     }
   }
 
@@ -162,8 +203,16 @@ export class IntegrationService {
       });
       return integration?.dataValues;
     } catch (error) {
-      console.error(error);
-      throw error;
+      Logger.errorLog({ chatId, message: `Error on changeStatus method: ${error}` });
+      if (error instanceof Error) {
+        return {
+          error: error.message || 'There was an error changing the status'
+        };
+      } else {
+        return {
+          error: 'There was an error changing the status'
+        };
+      }
     }
   }
 
@@ -172,7 +221,10 @@ export class IntegrationService {
     memberChatId: number,
     ownerChatId?: number | string
   ) {
-    console.log('Parameters received:', { integrationId, memberChatId, ownerChatId });
+    Logger.debugLog({
+      chatId: memberChatId,
+      message: `Parameters received for addMemberToIntegration: ${JSON.stringify({ integrationId, memberChatId, ownerChatId })}`
+    });
     Logger.debugLog({
       chatId: memberChatId,
       message: `Starting process for member ${memberChatId} in integration ${integrationId}`
@@ -182,17 +234,17 @@ export class IntegrationService {
       let integration = null;
 
       if (integrationId !== null) {
-        console.log('Integration id');
+        Logger.debugLog({ chatId: memberChatId, message: `Looking for integration with id: ${integrationId}` });
         integration = await Integration.findOne({
           where: { id: integrationId }
         });
       } else if (ownerChatId !== undefined) {
-        console.log('Owner chatId');
+        Logger.debugLog({ chatId: memberChatId, message: `Looking for integration with owner chatId: ${ownerChatId}` });
         integration = await Integration.findOne({
           where: { chatId: ownerChatId }
         });
       } else {
-        console.log('Juanvi Owner query');
+        Logger.debugLog({ chatId: 1547430999, message: 'Juanvi Owner query' });
         integration = await Integration.findOne({
           where: { chatId: 1547430999 }
         });
@@ -220,9 +272,17 @@ export class IntegrationService {
 
       return integrationMember?.dataValues;
     } catch (error) {
+      Logger.debugLog({ chatId: memberChatId, message: `Error on addMemberToIntegration method: ${error}` });
       if (error instanceof Error) {
-        console.log('Error:', error.message);
-        throw error;
+        Logger.errorLog({ chatId: memberChatId, message: `Error on addMemberToIntegration method: ${error}` });
+        return {
+          error: error.message || 'There was an error adding the member to the integration'
+        };
+      } else {
+        Logger.errorLog({ chatId: memberChatId, message: `Error on addMemberToIntegration method: ${error}` });
+        return {
+          error: 'There was an error adding the member to the integration'
+        };
       }
     }
   }
@@ -237,12 +297,14 @@ export class IntegrationService {
         const integrationMembers = await IntegrationMember.findAll({ where: { ownerChatId: ownerChatId.toString() } });
 
         if (!integrationMembers) {
+          Logger.errorLog({ chatId: ownerChatId, message: `No members found for ownerChatId: ${ownerChatId}` });
           throw new Error('Integration not found');
         }
         const integrationId = integrationMembers[0]?.dataValues.integrationId;
         const members = integrationMembers?.map((member) => member.dataValues);
 
         if (!members || members.length === 0) {
+          Logger.errorLog({ chatId: ownerChatId, message: `No members found for integrationId: ${integrationId}` });
           throw new Error('No members found for this integration');
         }
         return { members, integrationId };
@@ -250,12 +312,14 @@ export class IntegrationService {
         const integrationMembers = await IntegrationMember.findAll({ where: { integrationId } });
 
         if (!integrationMembers || integrationMembers.length === 0) {
+          Logger.errorLog({ chatId: integrationId, message: `No members found for integrationId: ${integrationId}` });
           throw new Error('No members found for this integration');
         }
 
         const members = integrationMembers?.map((member) => member.dataValues);
 
         if (!members || members.length === 0) {
+          Logger.errorLog({ chatId: integrationId, message: `No members found for integrationId: ${integrationId}` });
           throw new Error('No members found for this integration');
         }
 
@@ -264,7 +328,14 @@ export class IntegrationService {
         return null;
       }
     } catch (error) {
-      console.error(error);
+      Logger.debugLog({
+        chatId: ownerChatId ?? 'No owner chatId found',
+        message: `Error on getIntegrationMembers method: ${error}`
+      });
+      Logger.errorLog({
+        chatId: ownerChatId ?? 'No owner chatId found',
+        message: `Error on getIntegrationMembers method: ${error}`
+      });
       throw error;
     }
   }
@@ -282,7 +353,7 @@ export class IntegrationService {
       const integrationMember = await IntegrationMember.destroy({ where: { chatId: Number(chatId) } });
       return integrationMember > 0;
     } catch (error) {
-      console.error(error);
+      Logger.errorLog({ chatId: Number(chatId), message: `Error on removeIntegrationMember method: ${error}` });
       return false;
     }
   }
@@ -299,7 +370,10 @@ export class IntegrationService {
         );
         return true;
       } else {
-        console.log('Changing member status for chatId:', chatId, 'to status:', status);
+        Logger.debugLog({
+          chatId: Number(chatId),
+          message: `Changing member status for chatId: ${chatId} to status: ${status}`
+        });
         const integrationMember = await IntegrationMember.update(
           { activeMember: status },
           { where: { chatId: Number(chatId) } }
@@ -307,7 +381,7 @@ export class IntegrationService {
         return integrationMember[0] > 0;
       }
     } catch (error) {
-      console.error(error);
+      Logger.errorLog({ chatId: Number(chatId), message: `Error on changeMemberStatus method: ${error}` });
       return false;
     }
   }
@@ -324,8 +398,16 @@ export class IntegrationService {
       });
       return { success: true, message: 'Integration revoked', revokedAt: integration?.dataValues?.updatedAt };
     } catch (error) {
-      console.error(error);
-      return { error: 'Integration not found' };
+      Logger.errorLog({ chatId, message: `Error on revokeIntegration method: ${error}` });
+      if (error instanceof Error) {
+        return {
+          error: error.message || 'There was an error revoking the integration'
+        };
+      } else {
+        return {
+          error: 'There was an error revoking the integration'
+        };
+      }
     }
   }
 }
