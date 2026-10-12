@@ -42,7 +42,8 @@ export const mockLogger = {
 // Utils mock
 export const mockUtils = {
   generateUniqueId: vi.fn(() => 'test-id-123'),
-  hashChatId: vi.fn(() => 'hashed-chat-id')
+  hashChatId: vi.fn(() => 'hashed-chat-id'),
+  hashCode: vi.fn((value: string) => `hashed-${value}`)
 };
 
 // Configuration of mocks for modules

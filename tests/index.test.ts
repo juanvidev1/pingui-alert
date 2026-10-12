@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mockIntegrationService, mockQueueService, mockUtils, mockBot } from './mocks.js';
 import app from '../src/api/index.js';
-import { checkLimit } from '../src/services/rateLimit.service.js';
+import { checkLimit, pruneExpired } from '../src/services/rateLimit.service.js';
+import { rateLimitStore, resetRateLimitStore } from '../src/middlewares/validateHibrydRateLimit.js';
 
 // Test for rate limit service
 describe('Rate Limit Service', () => {
@@ -40,13 +41,29 @@ describe('Rate Limit Service', () => {
 
     expect(checkLimit(store, 'token:abc', LIMIT, WINDOW, later).allowed).toBe(true);
   });
+
+  it('prunes expired entries and keeps active ones', () => {
+    const store = new Map();
+    const now = Date.now();
+
+    checkLimit(store, 'token:old', LIMIT, WINDOW, now - WINDOW - 1);
+    checkLimit(store, 'token:fresh', LIMIT, WINDOW, now);
+
+    const removed = pruneExpired(store, WINDOW, now);
+
+    expect(removed).toBe(1);
+    expect(store.has('token:old')).toBe(false);
+    expect(store.has('token:fresh')).toBe(true);
+  });
 });
 
 // Test for creating an alert. Has mocked change rate limit service.
 describe('POST /api/alert', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    resetRateLimitStore();
     mockIntegrationService.changeRateLimit.mockResolvedValue({ id: 1, chatId: 1547430999 });
+    mockQueueService.enqueueAlert.mockResolvedValue(true);
   });
 
   it('should create an alert', async () => {
@@ -65,6 +82,52 @@ describe('POST /api/alert', () => {
 
     expect(res.status).toBe(200);
 
+    const json = await res.json();
+    expect(json.message).toBe('Alert enqueued');
+  });
+});
+
+// Test for the hybrid rate limit applied to the alert endpoints.
+describe('Hybrid rate limit on alert endpoints', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetRateLimitStore();
+    mockIntegrationService.changeRateLimit.mockResolvedValue({ id: 1, chatId: 1547430999 });
+    mockQueueService.enqueueAlert.mockResolvedValue(true);
+  });
+
+  const alertRequest = (chatId: number) =>
+    app.request('/api/alert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test-token'
+      },
+      body: JSON.stringify({
+        title: 'Alerta crítica',
+        message: 'Esto es una alerta crítica',
+        chatId
+      })
+    });
+
+  it('blocks a non-admin alert when the token limit is exceeded', async () => {
+    const key = `token:${mockUtils.hashCode('test-token')}`;
+    rateLimitStore.set(key, { count: 120, lastReset: Date.now() });
+
+    const res = await alertRequest(123456789);
+
+    expect(res.status).toBe(429);
+    const json = await res.json();
+    expect(json.error).toBe('Too Many Requests');
+  });
+
+  it('exempts the admin chat from the rate limit', async () => {
+    const key = `token:${mockUtils.hashCode('test-token')}`;
+    rateLimitStore.set(key, { count: 120, lastReset: Date.now() });
+
+    const res = await alertRequest(1547430999);
+
+    expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.message).toBe('Alert enqueued');
   });

@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { ApiController, MetricsController } from '../controllers/index.js';
 import { verifyJwtToken, validateRateLimit, validateStatus, verifyTemporalToken } from '../../middlewares/index.js';
+import { hybridRateLimit } from '../../middlewares/validateHibrydRateLimit.js';
 
 // Validators
 import { zValidator } from '@hono/zod-validator';
@@ -12,9 +13,16 @@ apiRouter.get('/metrics/daily', MetricsController.getMetrics);
 
 apiRouter.post('/temporal-token', ApiController.createTemporalToken);
 
-apiRouter.post('/alert', verifyJwtToken, validateRateLimit, validateStatus, ApiController.alert);
+apiRouter.post('/alert', verifyJwtToken, hybridRateLimit, validateRateLimit, validateStatus, ApiController.alert);
 
-apiRouter.post('/alert/members', verifyJwtToken, validateRateLimit, validateStatus, ApiController.alertMembers);
+apiRouter.post(
+  '/alert/members',
+  verifyJwtToken,
+  hybridRateLimit,
+  validateRateLimit,
+  validateStatus,
+  ApiController.alertMembers
+);
 
 apiRouter.post(
   '/change-member-status',

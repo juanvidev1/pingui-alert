@@ -26,3 +26,21 @@ export function checkLimit(
   entry.count++;
   return { allowed: true };
 }
+
+// Removes expired entries from the store to avoid unbounded memory growth in production.
+export function pruneExpired(
+  store: Map<string, { count: number; lastReset: number }>,
+  windowMs: number,
+  now: number
+): number {
+  let removed = 0;
+
+  for (const [key, entry] of store) {
+    if (now - entry.lastReset > windowMs) {
+      store.delete(key);
+      removed++;
+    }
+  }
+
+  return removed;
+}
